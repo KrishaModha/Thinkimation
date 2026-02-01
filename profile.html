@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Thinkimation</title>
+    <script src="/_sdk/element_sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        box-sizing: border-box;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .profile-card {
+        transition: all 0.3s ease;
+      }
+      .profile-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      }
+      .btn-hover:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .input-focus:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+      }
+      .avatar-upload {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .avatar-upload:hover .avatar-overlay {
+        opacity: 1;
+      }
+      .avatar-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 50%;
+      }
+    </style>
+    <style>@view-transition { navigation: auto; }</style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  </head>
+  <body class="min-h-full bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <h1 id="nav-logo" class="text-2xl font-bold text-indigo-600">Thinkimation</h1>
+            </div>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a href="landingpage.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Home</a> 
+              <a href="profile.html" class="text-indigo-600 bg-indigo-50 px-3 py-2 rounded-md text-sm font-medium">Profile</a> 
+              <a href="userdata.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Study Dashboard</a> 
+              <a href="pormodoropage.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Pomodoro</a> 
+              <a href="login.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 id="page-title" class="text-3xl font-bold text-gray-900">My Profile</h1>
+        <p class="mt-2 text-gray-600">Manage your account settings and preferences</p>
+      </div>
+      <div class="grid lg:grid-cols-3 gap-8">
+
+        <!-- Profile Overview Card -->
+        <div class="lg:col-span-1">
+          <div class="profile-card bg-white rounded-xl shadow-lg p-6">
+            <!-- Profile Picture -->
+            <div class="text-center mb-6">
+              <div class="avatar-upload inline-block relative">
+                <img id="profile-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23e5e7eb'/%3E%3Cpath d='M60 60c11.046 0 20-8.954 20-20s-8.954-20-20-20-20 8.954-20 20 8.954 20 20 20zm0 10c-13.807 0-25 11.193-25 25v5h50v-5c0-13.807-11.193-25-25-25z' fill='%239ca3af'/%3E%3C/svg%3E" alt="Profile Picture" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg">
+                <div class="avatar-overlay">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </div>
+                <input type="file" id="avatar-upload" accept="image/*" class="hidden">
+              </div>
+              <button id="change-avatar-btn" class="mt-3 text-sm text-indigo-600 hover:text-indigo-500 font-medium"> Change Photo </button>
+            </div>
+
+            <!-- Basic Info -->
+            <div class="text-center">
+              <h2 id="profile-name" class="text-xl font-semibold text-gray-900">Sarah Johnson</h2>
+              <p id="profile-username" class="text-gray-600 mt-1">@sarah.johnson</p>
+              <p id="profile-email" class="text-gray-500 text-sm mt-2">sarah.johnson@email.com</p>
+            </div>
+
+
+            <!-- Quick Stats -->
+            <div class="mt-6 grid grid-cols-2 gap-4 text-center">
+              <div class="bg-indigo-50 rounded-lg p-3">
+                <div class="text-2xl font-bold text-indigo-600">24</div>
+                <div class="text-xs text-indigo-600">Videos Created</div>
+              </div>
+              <div class="bg-green-50 rounded-lg p-3">
+                <div class="text-2xl font-bold text-green-600">156</div>
+                <div class="text-xs text-green-600">Hours Learned</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Profile Details -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Profile Information -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h3 id="profile-info-title" class="text-lg font-semibold text-gray-900">Profile Information</h3>
+              <button id="edit-profile-btn" class="btn-hover bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"> Edit Profile </button>
+            </div>
+
+
+
+            <!-- View Mode -->
+            <div id="profile-view-mode">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <p id="display-name" class="text-gray-900">Sarah Johnson</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                  <p id="display-username" class="text-gray-900">sarah.johnson</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <p id="display-email" class="text-gray-900">sarah.johnson@email.com</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <p id="display-phone" class="text-gray-900">+1 (555) 123-4567</p>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                  <p id="display-bio" class="text-gray-900">
+                    Passionate learner exploring the world through visual education. Love creating animated explanations for complex topics!
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            
+            <!-- Edit Mode -->
+            <div id="profile-edit-mode" class="hidden">
+              <form id="profile-form">
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="edit-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="edit-name" value="Sarah Johnson" class="input-focus w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                  </div>
+                  <div>
+                    <label for="edit-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="edit-username" value="sarah.johnson" class="input-focus w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                  </div>
+                  <div>
+                    <label for="edit-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="edit-email" value="sarah.johnson@email.com" class="input-focus w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                  </div>
+                  <div>
+                    <label for="edit-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <input type="tel" id="edit-phone" value="+1 (555) 123-4567" class="input-focus w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                  </div>
+                  <div class="md:col-span-2">
+                    <label for="edit-bio" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                    <textarea id="edit-bio" rows="3" class="input-focus w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">Passionate learner exploring the world through visual education. Love creating animated explanations for complex topics!</textarea>
+                  </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                  <button type="button" id="cancel-edit-btn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"> Cancel </button>
+                  <button type="submit" class="btn-hover bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-all"> Save Changes </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    
+    <!-- Success/Error Messages -->
+    <div id="message-container" class="fixed top-4 right-4 z-50"></div>
+    <script>
+      // Configuration object for editable features
+      const defaultConfig = {
+        company_name: "Thinkimation",
+        page_title: "My Profile",
+        profile_info_title: "Profile Information"
+      };
+
+      // Profile data
+      let profileData = {
+        name: "Sarah Johnson",
+        username: "sarah.johnson",
+        email: "sarahjohnson2025@email.com",
+        phone: "+1 (555) 123-4567",
+        bio: "Passionate learner exploring the world through visual education. Love creating animated explanations for complex topics!"
+      };
+
+      // DOM elements
+      const editProfileBtn = document.getElementById('edit-profile-btn');
+      const cancelEditBtn = document.getElementById('cancel-edit-btn');
+      const profileForm = document.getElementById('profile-form');
+      const profileViewMode = document.getElementById('profile-view-mode');
+      const profileEditMode = document.getElementById('profile-edit-mode');
+
+      // Avatar elements
+      const avatarUpload = document.getElementById('avatar-upload');
+      const changeAvatarBtn = document.getElementById('change-avatar-btn');
+      const profileAvatar = document.getElementById('profile-avatar');
+
+      // Edit profile functionality
+      editProfileBtn.addEventListener('click', function() {
+        profileViewMode.classList.add('hidden');
+        profileEditMode.classList.remove('hidden');
+        editProfileBtn.textContent = 'Editing...';
+        editProfileBtn.disabled = true;
+      });
+
+      cancelEditBtn.addEventListener('click', function() {
+        profileEditMode.classList.add('hidden');
+        profileViewMode.classList.remove('hidden');
+        editProfileBtn.textContent = 'Edit Profile';
+        editProfileBtn.disabled = false;
+
+        // Reset form values
+        document.getElementById('edit-name').value = profileData.name;
+        document.getElementById('edit-username').value = profileData.username;
+        document.getElementById('edit-email').value = profileData.email;
+        document.getElementById('edit-phone').value = profileData.phone;
+        document.getElementById('edit-bio').value = profileData.bio;
+      });
+
+      profileForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Get form values
+        const newData = {
+          name: document.getElementById('edit-name').value,
+          username: document.getElementById('edit-username').value,
+          email: document.getElementById('edit-email').value,
+          phone: document.getElementById('edit-phone').value,
+          bio: document.getElementById('edit-bio').value
+        };
+
+        // Validate
+        if (!newData.name || !newData.username || !newData.email) {
+          showMessage('Please fill in all required fields', 'error');
+          return;
+        }
+
+        // Update profile data
+        profileData = newData;
+        updateProfileDisplay();
+
+        // Switch back to view mode
+        profileEditMode.classList.add('hidden');
+        profileViewMode.classList.remove('hidden');
+        editProfileBtn.textContent = 'Edit Profile';
+        editProfileBtn.disabled = false;
+
+        showMessage('Profile updated successfully!', 'success');
+      });
+
+      // Avatar upload functionality
+      changeAvatarBtn.addEventListener('click', function() {
+        avatarUpload.click();
+      });
+
+      document.querySelector('.avatar-upload').addEventListener('click', function() {
+        avatarUpload.click();
+      });
+
+      avatarUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 5 * 1024 * 1024) {
+            showMessage('File size must be less than 5MB', 'error');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            profileAvatar.src = e.target.result;
+            showMessage('Profile picture updated!', 'success');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Update profile display
+      function updateProfileDisplay() {
+        document.getElementById('profile-name').textContent = profileData.name;
+        document.getElementById('profile-username').textContent = '@' + profileData.username;
+        document.getElementById('profile-email').textContent = profileData.email;
+
+        document.getElementById('display-name').textContent = profileData.name;
+        document.getElementById('display-username').textContent = profileData.username;
+        document.getElementById('display-email').textContent = profileData.email;
+        document.getElementById('display-phone').textContent = profileData.phone;
+        document.getElementById('display-bio').textContent = profileData.bio;
+      }
+
+      // Message display function
+      function showMessage(text, type) {
+        const messageContainer = document.getElementById('message-container');
+        const messageDiv = document.createElement('div');
+        let bgColor = 'bg-blue-500';
+        if (type === 'error') bgColor = 'bg-red-500';
+        if (type === 'success') bgColor = 'bg-green-500';
+        if (type === 'info') bgColor = 'bg-blue-500';
+        messageDiv.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg mb-2 transform transition-all duration-300`;
+        messageDiv.textContent = text;
+        messageContainer.appendChild(messageDiv);
+
+        setTimeout(() => {
+          messageDiv.style.transform = 'translateX(0)';
+        }, 10);
+        setTimeout(() => {
+          messageDiv.style.transform = 'translateX(100%)';
+          setTimeout(() => {
+            if (messageDiv.parentNode) {
+              messageDiv.parentNode.removeChild(messageDiv);
+            }
+          }, 300);
+        }, 4000);
+      }
+
+      // Element SDK implementation
+      async function onConfigChange(config) {
+        const navLogo = document.getElementById('nav-logo');
+        const pageTitle = document.getElementById('page-title');
+        const profileInfoTitle = document.getElementById('profile-info-title');
+
+        if (navLogo) navLogo.textContent = config.company_name || defaultConfig.company_name;
+        if (pageTitle) pageTitle.textContent = config.page_title || defaultConfig.page_title;
+        if (profileInfoTitle) profileInfoTitle.textContent = config.profile_info_title || defaultConfig.profile_info_title;
+      }
+
+      function mapToCapabilities(config) {
+        return {
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        };
+      }
+
+      function mapToEditPanelValues(config) {
+        return new Map([
+          ["company_name", config.company_name || defaultConfig.company_name],
+          ["page_title", config.page_title || defaultConfig.page_title],
+          ["profile_info_title", config.profile_info_title || defaultConfig.profile_info_title],
+        ]);
+      }
+
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities,
+          mapToEditPanelValues
+        });
+      }
+    </script>
+  </body>
+</html>
