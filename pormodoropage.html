@@ -1,18 +1,26 @@
 <!doctype html>
 <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pomodoro Planner - Thinkimation</title>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-        body {
-            box-sizing: border-box;
+
+<head>
+    <script src="auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Planner - Thinkimation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .nav-tab {
+            position: relative;
+            color: #6b7280;
         }
-        
+        .nav-tab:hover .nav-text { color: #4f46e5; }
+        .nav-tab .nav-text { display: block; transition: all 0.3s ease; }
+        .nav-tab-active {
+            color: #4f46e5 !important;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(168, 85, 247, 0.1));
+            transform: translateY(-1px);
+        }
+        body { box-sizing: border-box; }
         .timer-circle {
             width: 200px;
             height: 200px;
@@ -21,7 +29,6 @@
             background: conic-gradient(#4f46e5 0deg, #e5e7eb 0deg);
             transition: background 0.1s ease;
         }
-        
         .timer-inner {
             width: 160px;
             height: 160px;
@@ -35,202 +42,210 @@
             justify-content: center;
             flex-direction: column;
         }
-        
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        
+        .pulse-animation { animation: pulse 2s infinite; }
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
         .btn-hover:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        
-        .session-item {
-            transition: all 0.3s ease;
-        }
-        
-        .session-item:hover {
-            background-color: #f9fafb;
-        }
-        
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
-        
-        .break-mode {
-            background: conic-gradient(#10b981 0deg, #e5e7eb 0deg);
-        }
-        
-        .study-mode {
-            background: conic-gradient(#4f46e5 0deg, #e5e7eb 0deg);
-        }
-        
-        .notification-badge {
-            animation: bounce 1s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
+        .session-item { transition: all 0.3s ease; }
+        .session-item:hover { background-color: #f9fafb; }
+        .break-mode { background: conic-gradient(#10b981 0deg, #e5e7eb 0deg); }
+        .study-mode { background: conic-gradient(#4f46e5 0deg, #e5e7eb 0deg); }
+        @view-transition { navigation: auto; }
     </style>
-  <style>@view-transition { navigation: auto; }</style>
- </head>
- <body class="min-h-full bg-gray-50"><!-- Navigation -->
-  <nav class="bg-white shadow-sm border-b">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-     <div class="flex items-center">
-      <div class="flex-shrink-0">
-       <h1 id="nav-logo" class="text-2xl font-bold text-indigo-600">Thinkimation</h1>
-      </div>
-     </div>
-     <div class="hidden md:block">
-      <div class="ml-10 flex items-baseline space-x-4"><div class="ml-10 flex items-baseline space-x-4">
-  <a href="landingpage.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Home</a> 
-  <a href="profile.html" class="text-indigo-600 bg-indigo-50 px-3 py-2 rounded-md text-sm font-medium">Profile</a> 
-  <a href="userdata.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Study Dashboard</a> 
-  <a href="pormodoropage.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Pomodoro</a> 
-  <a href="login.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Logout</a>
-</div>
-      </div>
-     </div>
-    </div>
-   </div>
-  </nav>
-  
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8"><!-- Page Header -->
-   <div class="mb-8 text-center">
-    <h1 id="page-title" class="text-3xl font-bold text-gray-900">Pomodoro Study Planner</h1>
-    <p id="welcome-message" class="mt-2 text-gray-600">Focus your mind, achieve your goals!</p>
-   </div>
-   <div class="grid lg:grid-cols-3 gap-8">
-    
-    <!-- Timer Section -->
-    <div class="lg:col-span-2">
-        <!-- Timer Card -->
-     <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
-      <h3 id="timer-section-title" class="text-xl font-semibold text-gray-900 mb-6 text-center">Study Timer</h3><!-- Timer Display -->
-      <div class="flex justify-center mb-8">
-       <div id="timer-circle" class="timer-circle study-mode">
-        <div class="timer-inner">
-         <div id="timer-display" class="text-4xl font-bold text-gray-900">
-          25:00
-         </div>
-         <div id="timer-label" class="text-sm text-gray-600 mt-2">
-          Study Time
-         </div>
-        </div>
-       </div>
-      </div>
-      
-      <!-- Subject Input -->
-      <div class="mb-6"><label for="study-subject" class="block text-sm font-medium text-gray-700 mb-2"> What are you studying right now? </label> <input type="text" id="study-subject" placeholder="e.g., Calculus - Derivatives" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg">
-      </div><!-- Timer Options -->
-      <div class="grid grid-cols-2 gap-4 mb-6"><button id="timer-25" class="btn-hover bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium transition-all"> 25 Minutes </button> <button id="timer-50" class="btn-hover bg-indigo-100 text-indigo-600 px-6 py-3 rounded-lg font-medium transition-all"> 50 Minutes </button>
-      </div>
-      
-      <!-- Control Buttons -->
-      <div class="flex justify-center space-x-4"><button id="start-btn" class="btn-hover bg-green-600 text-white px-8 py-3 rounded-lg font-medium transition-all"> Start Session </button> <button id="pause-btn" class="btn-hover bg-yellow-600 text-white px-8 py-3 rounded-lg font-medium transition-all hidden"> Pause </button> <button id="stop-btn" class="btn-hover bg-red-600 text-white px-8 py-3 rounded-lg font-medium transition-all hidden"> Stop </button>
-      </div>
-      
-      <!-- Session Status -->
-      <div id="session-status" class="mt-6 text-center">
-       <p class="text-gray-600">Ready to start your study session!</p>
-      </div>
-     </div>
-     
-     <!-- Study Graph -->
-     <div class="bg-white rounded-xl shadow-lg p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Daily Study Progress</h3>
-      <div class="h-64">
-       <canvas id="studyChart"></canvas>
-      </div>
-     </div>
-    </div>
-    
-    <!-- Sidebar -->
-    <div class="space-y-6"><!-- Today's Stats -->
-     <div class="bg-white rounded-xl shadow-lg p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Today's Progress</h3>
-      <div class="space-y-4">
-       <div class="flex justify-between items-center"><span class="text-gray-600">Study Time</span> <span id="today-study-time" class="font-semibold text-indigo-600">0h 0m</span>
-       </div>
-       <div class="flex justify-between items-center"><span class="text-gray-600">Sessions</span> <span id="today-sessions" class="font-semibold text-green-600">0</span>
-       </div>
-       <div class="flex justify-between items-center"><span class="text-gray-600">Goal Progress</span> <span id="goal-progress" class="font-semibold text-purple-600">0%</span>
-       </div>
-      </div>
-      
-      
-      <!-- Progress Bar -->
-      <div class="mt-4">
-       <div class="flex justify-between text-sm text-gray-600 mb-1"><span>Daily Goal</span> <span>2 hours</span>
-       </div>
-       <div class="w-full bg-gray-200 rounded-full h-2">
-        <div id="progress-bar" class="progress-bar bg-indigo-600 h-2 rounded-full" style="width: 0%"></div>
-       </div>
-      </div>
-     </div>
-     
-     
-     <!-- Quick Actions -->
-     <div class="bg-white rounded-xl shadow-lg p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-      <div class="space-y-3"><button id="break-5" class="w-full btn-hover bg-green-100 text-green-700 px-4 py-2 rounded-lg font-medium transition-all"> 5 Min Break </button> <button id="break-15" class="w-full btn-hover bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium transition-all"> 15 Min Break </button> <button id="break-30" class="w-full btn-hover bg-purple-100 text-purple-700 px-4 py-2 rounded-lg font-medium transition-all"> 30 Min Break </button>
-      </div>
-     </div>
-    
-    </div>
-   </div>
-  </main>
-  
-  
-  <!-- Completion Modal -->
-  <div id="completion-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-   <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4 text-center">
-    <div class="mb-6">
-     <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-      <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-      </svg>
-     </div>
-     <h3 class="text-xl font-bold text-gray-900 mb-2">Session Complete!</h3>
-     <p id="completion-message" class="text-gray-600">Great job! You studied for 25 minutes.</p>
-    </div>
-    <div class="space-y-3"><button id="start-break-btn" class="w-full btn-hover bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-all"> Take a 5 Min Break </button> <button id="continue-studying-btn" class="w-full btn-hover bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium transition-all"> Continue Studying </button> <button id="finish-session-btn" class="w-full btn-hover bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all"> Finish for Now </button>
-    </div>
-   </div>
-  </div>
-  
-  
-  <!-- Success/Error Messages -->
-  <div id="message-container" class="fixed top-4 right-4 z-50"></div>
-  <script>
-        // Configuration object for editable features
-        const defaultConfig = {
-            company_name: "Thinkimation",
-            page_title: "Pomodoro Study Planner",
-            welcome_message: "Focus your mind, achieve your goals!",
-            timer_section_title: "Study Timer"
-        };
+</head>
 
+<body class="min-h-full bg-gray-50">
+
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-lg border-b border-indigo-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 id="nav-logo"
+                        class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Thinkimation</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-1">
+                        <a href="landingpage.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Home</span>
+                            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="generate.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Generate</span>
+                            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="userdata.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Dashboard</span>
+                            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="pormodoropage.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Pomodoro</span>
+                            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="profile.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Profile</span>
+                            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+
+        <!-- Page Header -->
+        <div class="mb-8 text-center">
+            <h1 id="page-title" class="text-3xl font-bold text-gray-900">Pomodoro Study Planner</h1>
+            <p id="welcome-message" class="mt-2 text-gray-600">Focus your mind, achieve your goals!</p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+
+            <!-- LEFT: Timer + Chart -->
+            <div class="lg:col-span-2">
+
+                <!-- Timer Card -->
+                <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                    <h3 id="timer-section-title" class="text-xl font-semibold text-gray-900 mb-6 text-center">Study Timer</h3>
+
+                    <!-- Timer Display -->
+                    <div class="flex justify-center mb-8">
+                        <div id="timer-circle" class="timer-circle study-mode">
+                            <div class="timer-inner">
+                                <div id="timer-display" class="text-4xl font-bold text-gray-900">25:00</div>
+                                <div id="timer-label" class="text-sm text-gray-600 mt-2">Study Time</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subject Input -->
+                    <div class="mb-6">
+                        <label for="study-subject" class="block text-sm font-medium text-gray-700 mb-2">
+                            What are you studying right now?
+                        </label>
+                        <input type="text" id="study-subject" placeholder="e.g., Calculus - Derivatives"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg">
+                    </div>
+
+                    <!-- Timer Options -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <button id="timer-25" class="btn-hover bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium transition-all">25 Minutes</button>
+                        <button id="timer-50" class="btn-hover bg-indigo-100 text-indigo-600 px-6 py-3 rounded-lg font-medium transition-all">50 Minutes</button>
+                    </div>
+
+                    <!-- Control Buttons -->
+                    <div class="flex justify-center space-x-4">
+                        <button id="start-btn" class="btn-hover bg-green-600 text-white px-8 py-3 rounded-lg font-medium transition-all">Start Session</button>
+                        <button id="pause-btn" class="btn-hover bg-yellow-600 text-white px-8 py-3 rounded-lg font-medium transition-all hidden">Pause</button>
+                        <button id="stop-btn" class="btn-hover bg-red-600 text-white px-8 py-3 rounded-lg font-medium transition-all hidden">Stop</button>
+                    </div>
+
+                    <!-- Session Status -->
+                    <div id="session-status" class="mt-6 text-center">
+                        <p class="text-gray-600">Ready to start your study session!</p>
+                    </div>
+                </div>
+
+                <!-- Study Chart -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Daily Study Progress</h3>
+                    <div class="h-64">
+                        <canvas id="studyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Sidebar -->
+            <div class="space-y-6">
+
+                <!-- Today's Stats -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Today's Progress</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Study Time</span>
+                            <span id="today-study-time" class="font-semibold text-indigo-600">0h 0m</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Sessions</span>
+                            <span id="today-sessions" class="font-semibold text-green-600">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Goal Progress</span>
+                            <span id="goal-progress" class="font-semibold text-purple-600">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                            <span>Daily Goal</span>
+                            <span>2 hours</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Sessions -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Sessions</h3>
+                    <div id="recent-sessions" class="space-y-2"></div>
+                    <p id="no-sessions" class="text-gray-400 text-sm text-center py-4">No sessions today yet. Start studying!</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <button id="break-5" class="w-full btn-hover bg-green-100 text-green-700 px-4 py-2 rounded-lg font-medium transition-all">5 Min Break</button>
+                        <button id="break-15" class="w-full btn-hover bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium transition-all">15 Min Break</button>
+                        <button id="break-30" class="w-full btn-hover bg-purple-100 text-purple-700 px-4 py-2 rounded-lg font-medium transition-all">30 Min Break</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Completion Modal -->
+    <div id="completion-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4 text-center">
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Session Complete!</h3>
+                <p id="completion-message" class="text-gray-600">Great job! You studied for 25 minutes.</p>
+            </div>
+            <div class="space-y-3">
+                <button id="start-break-btn" class="w-full btn-hover bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-all">Take a 5 Min Break</button>
+                <button id="continue-studying-btn" class="w-full btn-hover bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium transition-all">Continue Studying</button>
+                <button id="finish-session-btn" class="w-full btn-hover bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all">Finish for Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="message-container" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
         // Global variables
         let studySessions = [];
         let timerInterval = null;
-        let currentTime = 25 * 60; // 25 minutes in seconds
+        let currentTime = 25 * 60;
         let selectedDuration = 25;
         let isRunning = false;
         let isPaused = false;
@@ -239,38 +254,35 @@
         let sessionStartTime = null;
         let studyChart = null;
 
-        // Data handler for SDK
-        const dataHandler = {
-            onDataChanged(data) {
+        // ─── LOAD SESSIONS FROM DB ───────────────────────────────────────────
+        async function loadStudySessions() {
+            try {
+                const userId = localStorage.getItem("userId");
+                if (!userId) return;
+
+                const res = await fetch(`http://localhost:5000/get-study/${userId}`);
+                const data = await res.json();
+
                 studySessions = data;
                 updateTodayStats();
                 updateRecentSessions();
                 updateStudyChart();
-            }
-        };
-
-        // Initialize Data SDK
-        async function initializeDataSDK() {
-            if (window.dataSdk) {
-                const result = await window.dataSdk.init(dataHandler);
-                if (!result.isOk) {
-                    showMessage('Failed to initialize data storage', 'error');
-                }
+            } catch (err) {
+                console.log("Failed to load sessions:", err);
             }
         }
 
-        // Timer functionality
+        // ─── TIMER ───────────────────────────────────────────────────────────
         function updateTimerDisplay() {
             const minutes = Math.floor(currentTime / 60);
             const seconds = currentTime % 60;
-            document.getElementById('timer-display').textContent = 
+            document.getElementById('timer-display').textContent =
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            // Update circular progress
+
             const totalTime = selectedDuration * 60;
             const progress = ((totalTime - currentTime) / totalTime) * 360;
             const timerCircle = document.getElementById('timer-circle');
-            
+
             if (isBreakMode) {
                 timerCircle.style.background = `conic-gradient(#10b981 ${progress}deg, #e5e7eb ${progress}deg)`;
             } else {
@@ -289,29 +301,23 @@
                 }
                 sessionStartTime = new Date();
             }
-            
+
             isRunning = true;
-            
-            // Update UI
             document.getElementById('start-btn').classList.add('hidden');
             document.getElementById('pause-btn').classList.remove('hidden');
             document.getElementById('stop-btn').classList.remove('hidden');
             document.getElementById('timer-circle').classList.add('pulse-animation');
-            
-            // Update status
-            const statusText = isBreakMode ? 
-                `Taking a ${selectedDuration} minute break` : 
+
+            const statusText = isBreakMode ?
+                `Taking a ${selectedDuration} minute break` :
                 `Studying: ${currentSubject}`;
-            document.getElementById('session-status').innerHTML = 
+            document.getElementById('session-status').innerHTML =
                 `<p class="text-indigo-600 font-medium">${statusText}</p>`;
-            
+
             timerInterval = setInterval(() => {
                 currentTime--;
                 updateTimerDisplay();
-                
-                if (currentTime <= 0) {
-                    completeSession();
-                }
+                if (currentTime <= 0) completeSession();
             }, 1000);
         }
 
@@ -319,14 +325,11 @@
             isRunning = false;
             isPaused = true;
             clearInterval(timerInterval);
-            
-            // Update UI
             document.getElementById('start-btn').classList.remove('hidden');
             document.getElementById('start-btn').textContent = 'Resume';
             document.getElementById('pause-btn').classList.add('hidden');
             document.getElementById('timer-circle').classList.remove('pulse-animation');
-            
-            document.getElementById('session-status').innerHTML = 
+            document.getElementById('session-status').innerHTML =
                 '<p class="text-yellow-600 font-medium">Session paused</p>';
         }
 
@@ -334,102 +337,88 @@
             isRunning = false;
             isPaused = false;
             clearInterval(timerInterval);
-            
-            // Reset timer
             currentTime = selectedDuration * 60;
             updateTimerDisplay();
-            
-            // Update UI
             document.getElementById('start-btn').classList.remove('hidden');
             document.getElementById('start-btn').textContent = 'Start Session';
             document.getElementById('pause-btn').classList.add('hidden');
             document.getElementById('stop-btn').classList.add('hidden');
             document.getElementById('timer-circle').classList.remove('pulse-animation');
-            
-            document.getElementById('session-status').innerHTML = 
+            document.getElementById('session-status').innerHTML =
                 '<p class="text-gray-600">Ready to start your study session!</p>';
         }
 
         async function completeSession() {
             clearInterval(timerInterval);
             isRunning = false;
-            
-            // Remove animation
             document.getElementById('timer-circle').classList.remove('pulse-animation');
-            
+
             if (!isBreakMode) {
-                // Save study session
-                if (studySessions.length >= 999) {
-                    showMessage('Maximum limit of 999 sessions reached. Please delete some sessions first.', 'error');
-                    return;
-                }
-                
-                const session = {
-                    id: Date.now().toString(),
-                    subject: currentSubject,
-                    duration_minutes: selectedDuration,
-                    session_type: 'study',
-                    completed_at: new Date().toISOString(),
-                    date: new Date().toISOString().split('T')[0]
-                };
-                
-                const result = await window.dataSdk.create(session);
-                
-                if (result.isOk) {
-                    showMessage('Study session completed and saved!', 'success');
-                } else {
-                    showMessage('Session completed but failed to save data', 'error');
+                try {
+                    const userId = localStorage.getItem("userId");
+
+                    const response = await fetch("http://localhost:5000/add-study", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            userId,
+                            topic: currentSubject,
+                            duration: selectedDuration
+                        })
+                    });
+
+                    if (response.ok) {
+                        showMessage('Study session saved!', 'success');
+                        await loadStudySessions(); // refresh chart + stats
+                    } else {
+                        showMessage('Server error saving session', 'error');
+                    }
+
+                } catch (err) {
+                    console.log(err);
+                    showMessage('Error saving session', 'error');
                 }
             }
-            
-            // Show completion modal
+
             const modal = document.getElementById('completion-modal');
             const message = document.getElementById('completion-message');
-            
+
             if (isBreakMode) {
                 message.textContent = `Break time is over! Ready to get back to studying?`;
             } else {
-                message.textContent = `Great job! You studied ${currentSubject} for ${selectedDuration} minutes.`;
+                message.textContent = `Great job! You studied "${currentSubject}" for ${selectedDuration} minutes.`;
             }
-            
+
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            
-            // Reset timer
             stopTimer();
         }
 
-        // Timer duration selection
-        document.getElementById('timer-25').addEventListener('click', function() {
+        // ─── TIMER DURATION BUTTONS ───────────────────────────────────────────
+        document.getElementById('timer-25').addEventListener('click', function () {
             if (isRunning) return;
-            
             selectedDuration = 25;
             currentTime = 25 * 60;
             updateTimerDisplay();
-            
-            // Update button styles
             this.className = 'btn-hover bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium transition-all';
             document.getElementById('timer-50').className = 'btn-hover bg-indigo-100 text-indigo-600 px-6 py-3 rounded-lg font-medium transition-all';
         });
 
-        document.getElementById('timer-50').addEventListener('click', function() {
+        document.getElementById('timer-50').addEventListener('click', function () {
             if (isRunning) return;
-            
             selectedDuration = 50;
             currentTime = 50 * 60;
             updateTimerDisplay();
-            
-            // Update button styles
             this.className = 'btn-hover bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium transition-all';
             document.getElementById('timer-25').className = 'btn-hover bg-indigo-100 text-indigo-600 px-6 py-3 rounded-lg font-medium transition-all';
         });
 
-        // Control buttons
+        // ─── CONTROL BUTTONS ─────────────────────────────────────────────────
         document.getElementById('start-btn').addEventListener('click', startTimer);
         document.getElementById('pause-btn').addEventListener('click', pauseTimer);
         document.getElementById('stop-btn').addEventListener('click', stopTimer);
 
-        // Break buttons
+        // ─── BREAK BUTTONS ───────────────────────────────────────────────────
         document.getElementById('break-5').addEventListener('click', () => startBreak(5));
         document.getElementById('break-15').addEventListener('click', () => startBreak(15));
         document.getElementById('break-30').addEventListener('click', () => startBreak(30));
@@ -439,51 +428,38 @@
                 showMessage('Please stop the current session first', 'error');
                 return;
             }
-            
             isBreakMode = true;
             selectedDuration = minutes;
             currentTime = minutes * 60;
-            
-            // Update UI for break mode
             document.getElementById('timer-label').textContent = 'Break Time';
             document.getElementById('timer-circle').className = 'timer-circle break-mode';
             document.getElementById('start-btn').textContent = 'Start Break';
-            
             updateTimerDisplay();
             startTimer();
         }
 
-        // Completion modal handlers
-        document.getElementById('start-break-btn').addEventListener('click', function() {
+        // ─── MODAL BUTTONS ───────────────────────────────────────────────────
+        document.getElementById('start-break-btn').addEventListener('click', function () {
             document.getElementById('completion-modal').classList.add('hidden');
             document.getElementById('completion-modal').classList.remove('flex');
-            
-            if (!isBreakMode) {
-                startBreak(5);
-            }
+            if (!isBreakMode) startBreak(5);
         });
 
-        document.getElementById('continue-studying-btn').addEventListener('click', function() {
+        document.getElementById('continue-studying-btn').addEventListener('click', function () {
             document.getElementById('completion-modal').classList.add('hidden');
             document.getElementById('completion-modal').classList.remove('flex');
-            
-            // Reset to study mode
             isBreakMode = false;
             document.getElementById('timer-label').textContent = 'Study Time';
             document.getElementById('timer-circle').className = 'timer-circle study-mode';
             document.getElementById('start-btn').textContent = 'Start Session';
-            
-            // Reset to 25 minutes
             selectedDuration = 25;
             currentTime = 25 * 60;
             updateTimerDisplay();
         });
 
-        document.getElementById('finish-session-btn').addEventListener('click', function() {
+        document.getElementById('finish-session-btn').addEventListener('click', function () {
             document.getElementById('completion-modal').classList.add('hidden');
             document.getElementById('completion-modal').classList.remove('flex');
-            
-            // Reset everything
             isBreakMode = false;
             document.getElementById('timer-label').textContent = 'Study Time';
             document.getElementById('timer-circle').className = 'timer-circle study-mode';
@@ -491,51 +467,51 @@
             document.getElementById('study-subject').value = '';
         });
 
-        // Update today's stats
+        document.getElementById('completion-modal').addEventListener('click', function (e) {
+            if (e.target === this) document.getElementById('finish-session-btn').click();
+        });
+
+        // ─── STATS ───────────────────────────────────────────────────────────
         function updateTodayStats() {
             const today = new Date().toISOString().split('T')[0];
-            const todaySessions = studySessions.filter(session => 
+            const todaySessions = studySessions.filter(session =>
                 session.date === today && session.session_type === 'study'
             );
-            
-            const totalMinutes = todaySessions.reduce((sum, session) => sum + session.duration_minutes, 0);
+
+            const totalMinutes = todaySessions.reduce((sum, s) => sum + s.duration_minutes, 0);
             const hours = Math.floor(totalMinutes / 60);
             const minutes = totalMinutes % 60;
-            
+
             document.getElementById('today-study-time').textContent = `${hours}h ${minutes}m`;
             document.getElementById('today-sessions').textContent = todaySessions.length;
-            
-            // Calculate goal progress (2 hours = 120 minutes)
+
             const goalProgress = Math.min((totalMinutes / 120) * 100, 100);
             document.getElementById('goal-progress').textContent = `${Math.round(goalProgress)}%`;
             document.getElementById('progress-bar').style.width = `${goalProgress}%`;
         }
 
-        // Update recent sessions
+        // ─── RECENT SESSIONS ─────────────────────────────────────────────────
         function updateRecentSessions() {
             const container = document.getElementById('recent-sessions');
             const noSessions = document.getElementById('no-sessions');
-            
             const today = new Date().toISOString().split('T')[0];
+
             const todaySessions = studySessions
-                .filter(session => session.date === today && session.session_type === 'study')
+                .filter(s => s.date === today && s.session_type === 'study')
                 .sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at))
                 .slice(0, 5);
-            
+
             if (todaySessions.length === 0) {
                 container.innerHTML = '';
                 noSessions.classList.remove('hidden');
                 return;
             }
-            
+
             noSessions.classList.add('hidden');
-            
             container.innerHTML = todaySessions.map(session => {
                 const time = new Date(session.completed_at).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    hour: '2-digit', minute: '2-digit'
                 });
-                
                 return `
                     <div class="session-item p-3 border border-gray-200 rounded-lg">
                         <div class="flex justify-between items-start">
@@ -545,37 +521,31 @@
                             </div>
                             <span class="text-xs font-medium text-indigo-600">${session.duration_minutes}m</span>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
         }
 
-        // Update study chart
+        // ─── CHART ───────────────────────────────────────────────────────────
         function updateStudyChart() {
             const ctx = document.getElementById('studyChart').getContext('2d');
-            
-            if (studyChart) {
-                studyChart.destroy();
-            }
-            
-            // Generate last 7 days data
+            if (studyChart) studyChart.destroy();
+
             const last7Days = [];
             const studyData = [];
-            
+
             for (let i = 6; i >= 0; i--) {
                 const date = new Date();
                 date.setDate(date.getDate() - i);
                 const dateString = date.toISOString().split('T')[0];
-                
                 last7Days.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
-                
+
                 const dayMinutes = studySessions
-                    .filter(session => session.date === dateString && session.session_type === 'study')
-                    .reduce((sum, session) => sum + session.duration_minutes, 0);
-                
-                studyData.push(dayMinutes / 60); // Convert to hours
+                    .filter(s => s.date === dateString && s.session_type === 'study')
+                    .reduce((sum, s) => sum + s.duration_minutes, 0);
+
+                studyData.push(+(dayMinutes / 60).toFixed(2));
             }
-            
+
             studyChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -592,116 +562,40 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value + 'h';
-                                }
-                            }
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            ticks: { callback: v => v + 'h' }
                         },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
+                        x: { grid: { display: false } }
                     }
                 }
             });
         }
 
-        // Message display function
+        // ─── MESSAGES ────────────────────────────────────────────────────────
         function showMessage(text, type) {
             const messageContainer = document.getElementById('message-container');
             const messageDiv = document.createElement('div');
-            
-            let bgColor = 'bg-blue-500';
-            if (type === 'error') bgColor = 'bg-red-500';
-            if (type === 'success') bgColor = 'bg-green-500';
-            if (type === 'info') bgColor = 'bg-blue-500';
-            
+            let bgColor = type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-blue-500';
             messageDiv.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg mb-2 transform transition-all duration-300`;
             messageDiv.textContent = text;
-            
             messageContainer.appendChild(messageDiv);
-            
-            setTimeout(() => {
-                messageDiv.style.transform = 'translateX(0)';
-            }, 10);
-            
+            setTimeout(() => { messageDiv.style.transform = 'translateX(0)'; }, 10);
             setTimeout(() => {
                 messageDiv.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (messageDiv.parentNode) {
-                        messageDiv.parentNode.removeChild(messageDiv);
-                    }
-                }, 300);
+                setTimeout(() => { if (messageDiv.parentNode) messageDiv.parentNode.removeChild(messageDiv); }, 300);
             }, 4000);
         }
 
-        // Close modal when clicking outside
-        document.getElementById('completion-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                document.getElementById('finish-session-btn').click();
-            }
-        });
-
-        // Element SDK implementation
-        async function onConfigChange(config) {
-            const navLogo = document.getElementById('nav-logo');
-            const pageTitle = document.getElementById('page-title');
-            const welcomeMessage = document.getElementById('welcome-message');
-            const timerSectionTitle = document.getElementById('timer-section-title');
-
-            if (navLogo) navLogo.textContent = config.company_name || defaultConfig.company_name;
-            if (pageTitle) pageTitle.textContent = config.page_title || defaultConfig.page_title;
-            if (welcomeMessage) welcomeMessage.textContent = config.welcome_message || defaultConfig.welcome_message;
-            if (timerSectionTitle) timerSectionTitle.textContent = config.timer_section_title || defaultConfig.timer_section_title;
-        }
-
-        function mapToCapabilities(config) {
-            return {
-                recolorables: [],
-                borderables: [],
-                fontEditable: undefined,
-                fontSizeable: undefined
-            };
-        }
-
-        function mapToEditPanelValues(config) {
-            return new Map([
-                ["company_name", config.company_name || defaultConfig.company_name],
-                ["page_title", config.page_title || defaultConfig.page_title],
-                ["welcome_message", config.welcome_message || defaultConfig.welcome_message],
-                ["timer_section_title", config.timer_section_title || defaultConfig.timer_section_title]
-            ]);
-        }
-
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDataSDK();
+        // ─── INIT ─────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
             updateTimerDisplay();
-            updateStudyChart();
-            
-            // Initialize Element SDK
-            if (window.elementSdk) {
-                window.elementSdk.init({
-                    defaultConfig,
-                    onConfigChange,
-                    mapToCapabilities,
-                    mapToEditPanelValues
-                });
-            }
+            updateStudyChart(); // show empty chart immediately
+            loadStudySessions(); // then fill from DB
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9983570ec0a37f8a',t:'MTc2MjA4MzQ0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
