@@ -1,425 +1,619 @@
 <!doctype html>
 <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Dashboard - Thinkimation</title>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
+
+<head>
+    <script src="auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Dashboard - Thinkimation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .nav-tab {
+            position: relative;
+            color: #6b7280;
+        }
+
+        .nav-tab:hover .nav-text {
+            color: #4f46e5;
+        }
+
+        .nav-tab .nav-text {
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab-active {
+            color: #4f46e5 !important;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(168, 85, 247, 0.1));
+            transform: translateY(-1px);
+        }
+
         body {
             box-sizing: border-box;
         }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
+
         .card-hover:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
-        
+
         .btn-hover:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        
-        .progress-bar {
-            transition: width 0.5s ease;
-        }
-        
-        .badge-glow {
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-        }
-        
+
         .topic-card {
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        
+
         .topic-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
         }
-        
+
         .level-badge {
             position: relative;
             overflow: hidden;
         }
-        
-        .level-badge::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .level-badge:hover::before {
-            left: 100%;
-        }
-        
+
         .streak-flame {
             animation: flicker 2s infinite alternate;
         }
-        
+
         @keyframes flicker {
-            0% { transform: scale(1) rotate(-1deg); }
-            100% { transform: scale(1.05) rotate(1deg); }
+            0% {
+                transform: scale(1) rotate(-1deg);
+            }
+
+            100% {
+                transform: scale(1.05) rotate(1deg);
+            }
+        }
+
+        .badge-glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @view-transition {
+            navigation: auto;
         }
     </style>
-  <style>@view-transition { navigation: auto; }</style>
- </head>
- <body class="min-h-full bg-gray-50">
-    
-    
-    <!-- Navigation -->
-  <nav class="bg-white shadow-sm border-b">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-     <div class="flex items-center">
-      <div class="flex-shrink-0">
-       <h1 id="nav-logo" class="text-2xl font-bold text-indigo-600">Thinkimation</h1>
-      </div>
-     </div>
-     <div class="hidden md:block">
-      <div class="ml-10 flex items-baseline space-x-4"><div class="ml-10 flex items-baseline space-x-4">
-  <a href="landingpage.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Home</a> 
-  <a href="profile.html" class="text-indigo-600 bg-indigo-50 px-3 py-2 rounded-md text-sm font-medium">Profile</a> 
-  <a href="userdata.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Study Dashboard</a> 
-  <a href="pormodoropage.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Pomodoro</a> 
-  <a href="login.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Logout</a>
-</div>
-      </div>
-     </div>
-    </div>
-   </div>
-  </nav>
-  
-  
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8"><!-- Page Header -->
-   <div class="mb-8">
-    <h1 id="page-title" class="text-3xl font-bold text-gray-900">Study Progress Dashboard</h1>
-    <p id="welcome-message" class="mt-2 text-gray-600">Track your learning journey and celebrate your progress!</p>
-   </div>
-   
-   
-   <!-- Stats Overview -->
-   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"><!-- Total Hours -->
-    <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
-     <div class="flex items-center">
-      <div class="p-3 rounded-full bg-blue-100 mr-4">
-       <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-       </svg>
-      </div>
-      <div>
-       <p class="text-sm font-medium text-gray-600">Total Hours</p>
-       <p id="total-hours" class="text-2xl font-bold text-gray-900">0</p>
-      </div>
-     </div>
-    </div>
-    
-    <!-- Topics Studied -->
-    <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
-     <div class="flex items-center">
-      <div class="p-3 rounded-full bg-green-100 mr-4">
-       <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-       </svg>
-      </div>
-      <div>
-       <p class="text-sm font-medium text-gray-600">Topics Studied</p>
-       <p id="topics-count" class="text-2xl font-bold text-gray-900">0</p>
-      </div>
-     </div>
-    </div>
-    
-    
-    <!-- Current Streak -->
-    <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
-     <div class="flex items-center">
-      <div class="p-3 rounded-full bg-orange-100 mr-4">
-       <div class="streak-flame text-orange-600 text-xl">
-        🔥
-       </div>
-      </div>
-      <div>
-       <p class="text-sm font-medium text-gray-600">Current Streak</p>
-       <p id="current-streak" class="text-2xl font-bold text-gray-900">0 days</p>
-      </div>
-     </div>
-    </div>
-    
-    
-    <!-- Level -->
-    <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
-     <div class="flex items-center">
-      <div class="p-3 rounded-full bg-purple-100 mr-4">
-       <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-       </svg>
-      </div>
-      <div>
-       <p class="text-sm font-medium text-gray-600">Current Level</p>
-       <p id="current-level" class="text-2xl font-bold text-gray-900">Beginner</p>
-      </div>
-     </div>
-    </div>
-   </div>
-   
-   
-   <!-- Progress Chart and Badges -->
-   <div class="grid lg:grid-cols-3 gap-8 mb-8"><!-- Progress Chart -->
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
-     <h3 class="text-lg font-semibold text-gray-900 mb-4">Study Hours Over Time</h3>
-     <div class="h-64">
-      <canvas id="progressChart"></canvas>
-     </div>
-    </div>
-    
-    
-    <!-- Badges & Achievements -->
-    <div class="bg-white rounded-xl shadow-lg p-6">
-     <h3 class="text-lg font-semibold text-gray-900 mb-4">Achievements</h3>
-     <div class="space-y-4" id="badges-container"><!-- Badges will be populated here -->
-     </div>
-    </div>
-   </div>
-   
-   
-   
-   <!-- Add New Topic -->
-   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Add New Study Topic</h3>
-    <form id="add-topic-form" class="grid md:grid-cols-4 gap-4">
-     <div><label for="topic-name" class="block text-sm font-medium text-gray-700 mb-2">Topic Name</label> <input type="text" id="topic-name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Calculus">
-     </div>
-     <div><label for="topic-category" class="block text-sm font-medium text-gray-700 mb-2">Category</label> <select id="topic-category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"> <option value="">Select Category</option> <option value="Mathematics">Mathematics</option> <option value="Science">Science</option> <option value="History">History</option> <option value="Language">Language</option> <option value="Technology">Technology</option> <option value="Arts">Arts</option> <option value="Other">Other</option> </select>
-     </div>
-     <div><label for="completion-level" class="block text-sm font-medium text-gray-700 mb-2">Level</label> <select id="completion-level" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"> <option value="">Select Level</option> <option value="Beginner">Beginner</option> <option value="Intermediate">Intermediate</option> <option value="Advanced">Advanced</option> <option value="Revision">Revision</option> </select>
-     </div>
-     <div class="flex items-end"><button type="submit" id="add-topic-btn" class="btn-hover w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-all"> Add Topic </button>
-     </div>
-    </form>
-   </div>
-   
-   
-   
-   <!-- Topics Grid -->
-   <div class="mb-8">
-    <div class="flex justify-between items-center mb-6">
-     <h3 class="text-lg font-semibold text-gray-900">Your Study Topics</h3>
-     <div class="flex space-x-2"><button id="filter-all" class="px-3 py-1 text-sm bg-indigo-600 text-white rounded-full">All</button> <button id="filter-mathematics" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Math</button> <button id="filter-science" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Science</button> <button id="filter-technology" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Tech</button>
-     </div>
-    </div>
-    <div id="topics-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Topics will be populated here -->
-    </div>
-    <div id="empty-state" class="text-center py-12">
-     <div class="text-gray-400 mb-4">
-      <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-      </svg>
-     </div>
-     <h3 class="text-lg font-medium text-gray-900 mb-2">No study topics yet</h3>
-     <p class="text-gray-600 mb-4">Add your first study topic to start tracking your progress!</p>
-    </div>
-   </div>
-  </main>
-  
-  
-  
-  <!-- Topic Detail Modal -->
-  <div id="topic-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-   <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4 max-h-full overflow-y-auto">
-    <div class="flex justify-between items-center mb-6">
-     <h3 id="modal-topic-name" class="text-xl font-bold text-gray-900"></h3><button id="close-modal" class="text-gray-400 hover:text-gray-600">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg></button>
-    </div>
-    <div class="grid md:grid-cols-2 gap-6 mb-6">
-     <div class="bg-blue-50 rounded-lg p-4">
-      <h4 class="font-semibold text-blue-900 mb-2">Study Time</h4>
-      <p id="modal-hours" class="text-2xl font-bold text-blue-600">0 hours</p>
-     </div>
-     <div class="bg-green-50 rounded-lg p-4">
-      <h4 class="font-semibold text-green-900 mb-2">Completion Level</h4>
-      <p id="modal-level" class="text-lg font-semibold text-green-600">Beginner</p>
-     </div>
-     <div class="bg-purple-50 rounded-lg p-4">
-      <h4 class="font-semibold text-purple-900 mb-2">Videos Watched</h4>
-      <p id="modal-videos" class="text-2xl font-bold text-purple-600">0</p>
-     </div>
-     <div class="bg-orange-50 rounded-lg p-4">
-      <h4 class="font-semibold text-orange-900 mb-2">Notes Viewed</h4>
-      <p id="modal-notes" class="text-2xl font-bold text-orange-600">0</p>
-     </div>
-    </div>
-    <div class="mb-6">
-     <h4 class="font-semibold text-gray-900 mb-3">Update Progress</h4>
-     <form id="update-progress-form" class="grid md:grid-cols-3 gap-4">
-      <div><label for="add-hours" class="block text-sm font-medium text-gray-700 mb-2">Add Study Hours</label> <input type="number" id="add-hours" min="0" step="0.5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.5">
-      </div>
-      <div><label for="add-videos" class="block text-sm font-medium text-gray-700 mb-2">Videos Watched</label> <input type="number" id="add-videos" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="1">
-      </div>
-      <div><label for="add-notes" class="block text-sm font-medium text-gray-700 mb-2">Notes Viewed</label> <input type="number" id="add-notes" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="1">
-      </div>
-     </form>
-    </div>
-    <div class="flex justify-between"><button id="delete-topic-btn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"> Delete Topic </button>
-     <div class="space-x-3"><button id="cancel-update-btn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"> Cancel </button> <button id="save-progress-btn" class="btn-hover bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-all"> Save Progress </button>
-     </div>
-    </div>
-   </div>
-  </div>
-  
-  
-  
-  <!-- Success/Error Messages -->
-  <div id="message-container" class="fixed top-4 right-4 z-50"></div>
-  <script>
-        // Configuration object for editable features
-        const defaultConfig = {
-            company_name: "Thinkimation",
-            page_title: "Study Progress Dashboard",
-            welcome_message: "Track your learning journey and celebrate your progress!"
-        };
+</head>
 
-        // Global variables
-        let studyData = [];
+<body class="min-h-full bg-gray-50">
+
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-lg border-b border-indigo-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1
+                    class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    Thinkimation
+                </h1>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-1">
+                        <a href="landingpage.html"
+                            class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Home</span>
+                            <span
+                                class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="generate.html"
+                            class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Generate</span>
+                            <span
+                                class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="userdata.html"
+                            class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Dashboard</span>
+                            <span
+                                class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="pormodoropage.html"
+                            class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Pomodoro</span>
+                            <span
+                                class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                        <a href="profile.html"
+                            class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+                            <span class="nav-text">Profile</span>
+                            <span
+                                class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Study Progress Dashboard</h1>
+            <p class="mt-2 text-gray-600">Track your learning journey and celebrate your progress!</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+            <!-- Total Hours (from Pomodoro sessions) -->
+            <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 mr-4">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Hours</p>
+                        <p id="total-hours" class="text-2xl font-bold text-gray-900">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topics Studied -->
+            <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 mr-4">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Topics Studied</p>
+                        <p id="topics-count" class="text-2xl font-bold text-gray-900">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Streak -->
+            <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-orange-100 mr-4">
+                        <div class="streak-flame text-orange-600 text-xl">🔥</div>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Day Streak</p>
+                        <p id="current-streak" class="text-2xl font-bold text-gray-900">0 days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level -->
+            <div class="card-hover bg-white rounded-xl shadow-lg p-6 transition-all">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 mr-4">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Current Level</p>
+                        <p id="current-level" class="text-2xl font-bold text-gray-900">Beginner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart + Badges -->
+        <div class="grid lg:grid-cols-3 gap-8 mb-8">
+
+            <!-- Progress Chart (real data from Pomodoro sessions) -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Study Hours — Last 7 Days</h3>
+                <div class="h-64">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Badges -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Achievements</h3>
+                <div class="space-y-4" id="badges-container">
+                    <div class="text-center text-gray-500 py-8">
+                        <p>Start studying to earn badges!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Topic -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Add New Study Topic</h3>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Topic Name</label>
+                    <input type="text" id="topic-name"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="e.g., Calculus">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="topic-category"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Select Category</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Science">Science</option>
+                        <option value="History">History</option>
+                        <option value="Language">Language</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Arts">Arts</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Level</label>
+                    <select id="completion-level"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Select Level</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Revision">Revision</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button id="add-topic-btn"
+                        class="btn-hover w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                        Add Topic
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topics Grid -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Your Study Topics</h3>
+                <div class="flex space-x-2">
+                    <button id="filter-all" class="px-3 py-1 text-sm bg-indigo-600 text-white rounded-full">All</button>
+                    <button id="filter-mathematics"
+                        class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Math</button>
+                    <button id="filter-science"
+                        class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Science</button>
+                    <button id="filter-technology"
+                        class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Tech</button>
+                </div>
+            </div>
+            <div id="topics-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="empty-state" class="text-center py-12 hidden">
+                <div class="text-gray-400 mb-4">
+                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No study topics yet</h3>
+                <p class="text-gray-600">Add your first study topic to start tracking your progress!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Topic Detail Modal -->
+    <div id="topic-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4 max-h-full overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modal-topic-name" class="text-xl font-bold text-gray-900"></h3>
+                <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-900 mb-2">Study Time</h4>
+                    <p id="modal-hours" class="text-2xl font-bold text-blue-600">0 hours</p>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-900 mb-2">Completion Level</h4>
+                    <p id="modal-level" class="text-lg font-semibold text-green-600">Beginner</p>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-purple-900 mb-2">Videos Watched</h4>
+                    <p id="modal-videos" class="text-2xl font-bold text-purple-600">0</p>
+                </div>
+                <div class="bg-orange-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-orange-900 mb-2">Notes Viewed</h4>
+                    <p id="modal-notes" class="text-2xl font-bold text-orange-600">0</p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-900 mb-3">Update Progress</h4>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Add Study Hours</label>
+                        <input type="number" id="add-hours" min="0" step="0.5"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                            placeholder="0.5">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Videos Watched</label>
+                        <input type="number" id="add-videos" min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                            placeholder="1">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Notes Viewed</label>
+                        <input type="number" id="add-notes" min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                            placeholder="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between">
+                <button id="delete-topic-btn"
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                    Delete Topic
+                </button>
+                <div class="space-x-3">
+                    <button id="cancel-update-btn"
+                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="save-progress-btn"
+                        class="btn-hover bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                        Save Progress
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="message-container" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
+        const BASE_URL = "http://localhost:5000";
+
+        // Global state
+        let studySessions = [];  // from Pomodoro timer
+        let topicsData = [];     // manually added topics
         let currentFilter = 'all';
         let selectedTopic = null;
         let progressChart = null;
 
-        // Data handler for SDK
-        const dataHandler = {
-            onDataChanged(data) {
-                studyData = data;
-                updateDashboard();
-                updateTopicsGrid();
+        // ─── LOAD ALL DATA ────────────────────────────────────────────────────
+        async function loadAllData() {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                showMessage("Please log in to view your dashboard", "error");
+                return;
+            }
+
+            try {
+                // Load Pomodoro sessions
+                const sessionsRes = await fetch(`${BASE_URL}/get-study/${userId}`);
+                studySessions = await sessionsRes.json();
+
+                // Load manually added topics
+                const topicsRes = await fetch(`${BASE_URL}/get-topics/${userId}`);
+                topicsData = await topicsRes.json();
+
+                // Update everything
+                updateStats();
                 updateProgressChart();
                 updateBadges();
-            }
-        };
+                updateTopicsGrid();
 
-        // Initialize Data SDK
-        async function initializeDataSDK() {
-            if (window.dataSdk) {
-                const result = await window.dataSdk.init(dataHandler);
-                if (!result.isOk) {
-                    showMessage('Failed to initialize data storage', 'error');
-                }
+            } catch (err) {
+                console.log("Error loading data:", err);
+                showMessage("Failed to load dashboard data", "error");
             }
         }
 
-        // Add new topic
-        document.getElementById('add-topic-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (studyData.length >= 999) {
-                showMessage('Maximum limit of 999 topics reached. Please delete some topics first.', 'error');
-                return;
-            }
-            
-            const topicName = document.getElementById('topic-name').value;
-            const category = document.getElementById('topic-category').value;
-            const completionLevel = document.getElementById('completion-level').value;
-            
-            if (!topicName || !category || !completionLevel) {
-                showMessage('Please fill in all fields', 'error');
-                return;
-            }
-            
-            const addBtn = document.getElementById('add-topic-btn');
-            addBtn.textContent = 'Adding...';
-            addBtn.disabled = true;
-            
-            const newTopic = {
-                id: Date.now().toString(),
-                topic_name: topicName,
-                category: category,
-                hours_studied: 0,
-                videos_watched: 0,
-                notes_viewed: 0,
-                completion_level: completionLevel,
-                last_studied: new Date().toISOString(),
-                created_at: new Date().toISOString()
-            };
-            
-            const result = await window.dataSdk.create(newTopic);
-            
-            if (result.isOk) {
-                showMessage('Topic added successfully!', 'success');
-                document.getElementById('add-topic-form').reset();
-            } else {
-                showMessage('Failed to add topic. Please try again.', 'error');
-            }
-            
-            addBtn.textContent = 'Add Topic';
-            addBtn.disabled = false;
-        });
+        // ─── STATS ────────────────────────────────────────────────────────────
+        function updateStats() {
+            // Total hours from Pomodoro sessions
+            const totalMinutes = studySessions.reduce((sum, s) => sum + s.duration_minutes, 0);
+            const totalHours = (totalMinutes / 60).toFixed(1);
+            document.getElementById('total-hours').textContent = totalHours;
 
-        // Update dashboard stats
-        function updateDashboard() {
-            const totalHours = studyData.reduce((sum, topic) => sum + topic.hours_studied, 0);
-            const topicsCount = studyData.length;
-            
-            document.getElementById('total-hours').textContent = totalHours.toFixed(1);
-            document.getElementById('topics-count').textContent = topicsCount;
-            
-            // Calculate streak (simplified - based on recent activity)
-            const recentTopics = studyData.filter(topic => {
-                const lastStudied = new Date(topic.last_studied);
-                const daysDiff = (new Date() - lastStudied) / (1000 * 60 * 60 * 24);
-                return daysDiff <= 1;
-            });
-            
-            document.getElementById('current-streak').textContent = `${Math.max(recentTopics.length, 0)} days`;
-            
-            // Calculate level based on total hours
+            // Topics count
+            document.getElementById('topics-count').textContent = topicsData.length;
+
+            // Streak — count consecutive days with at least one session
+            const streak = calculateStreak(studySessions);
+            document.getElementById('current-streak').textContent = `${streak} days`;
+
+            // Level based on total hours
             let level = 'Beginner';
-            if (totalHours >= 100) level = 'Expert';
-            else if (totalHours >= 50) level = 'Advanced';
-            else if (totalHours >= 20) level = 'Intermediate';
-            
+            if (totalMinutes / 60 >= 100) level = 'Expert';
+            else if (totalMinutes / 60 >= 50) level = 'Advanced';
+            else if (totalMinutes / 60 >= 20) level = 'Intermediate';
             document.getElementById('current-level').textContent = level;
         }
 
-        // Update topics grid
+        function calculateStreak(sessions) {
+            if (sessions.length === 0) return 0;
+
+            // Get unique dates studied
+            const dates = [...new Set(sessions.map(s => s.date))].sort().reverse();
+            if (dates.length === 0) return 0;
+
+            let streak = 0;
+            let checkDate = new Date();
+
+            for (let i = 0; i < dates.length; i++) {
+                const dateStr = checkDate.toISOString().split('T')[0];
+                if (dates.includes(dateStr)) {
+                    streak++;
+                    checkDate.setDate(checkDate.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        // ─── CHART (real Pomodoro data) ───────────────────────────────────────
+        function updateProgressChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            if (progressChart) progressChart.destroy();
+
+            const last7Days = [];
+            const hoursData = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                last7Days.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+
+                const dayMinutes = studySessions
+                    .filter(s => s.date === dateStr)
+                    .reduce((sum, s) => sum + s.duration_minutes, 0);
+
+                hoursData.push(+(dayMinutes / 60).toFixed(2));
+            }
+
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: last7Days,
+                    datasets: [{
+                        label: 'Hours Studied',
+                        data: hoursData,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#4f46e5',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            ticks: { callback: v => v + 'h' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // ─── BADGES ───────────────────────────────────────────────────────────
+        function updateBadges() {
+            const container = document.getElementById('badges-container');
+            const totalMinutes = studySessions.reduce((sum, s) => sum + s.duration_minutes, 0);
+            const totalHours = totalMinutes / 60;
+            const topicsCount = topicsData.length;
+
+            const badges = [];
+            if (totalHours >= 1) badges.push({ name: 'First Hour', icon: '⏰', color: 'bg-blue-100 text-blue-800' });
+            if (totalHours >= 10) badges.push({ name: '10 Hours', icon: '📚', color: 'bg-green-100 text-green-800' });
+            if (totalHours >= 50) badges.push({ name: 'Dedicated Learner', icon: '🎓', color: 'bg-purple-100 text-purple-800' });
+            if (totalHours >= 100) badges.push({ name: 'Study Master', icon: '👑', color: 'bg-yellow-100 text-yellow-800' });
+            if (topicsCount >= 1) badges.push({ name: 'Explorer', icon: '🗺️', color: 'bg-indigo-100 text-indigo-800' });
+            if (topicsCount >= 5) badges.push({ name: 'Multi-Subject', icon: '🌟', color: 'bg-pink-100 text-pink-800' });
+            if (topicsCount >= 10) badges.push({ name: 'Knowledge Seeker', icon: '🔍', color: 'bg-orange-100 text-orange-800' });
+
+            container.innerHTML = badges.length > 0
+                ? badges.map(b => `
+                    <div class="badge-glow flex items-center p-3 ${b.color} rounded-lg">
+                        <span class="text-2xl mr-3">${b.icon}</span>
+                        <div>
+                            <h4 class="font-semibold">${b.name}</h4>
+                            <p class="text-xs opacity-75">Achievement unlocked!</p>
+                        </div>
+                    </div>`).join('')
+                : `<div class="text-center text-gray-500 py-8"><p>Start studying to earn badges!</p></div>`;
+        }
+
+        // ─── ADD TOPIC ────────────────────────────────────────────────────────
+        document.getElementById('add-topic-btn').addEventListener('click', async function () {
+            const userId = localStorage.getItem("userId");
+            const topic_name = document.getElementById('topic-name').value.trim();
+            const category = document.getElementById('topic-category').value;
+            const completion_level = document.getElementById('completion-level').value;
+
+            if (!topic_name || !category || !completion_level) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            this.textContent = 'Adding...';
+            this.disabled = true;
+
+            try {
+                const res = await fetch(`${BASE_URL}/add-topic`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId, topic_name, category, completion_level })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showMessage('Topic added!', 'success');
+                    document.getElementById('topic-name').value = '';
+                    document.getElementById('topic-category').value = '';
+                    document.getElementById('completion-level').value = '';
+                    await loadAllData();
+                } else {
+                    showMessage(data.message || 'Failed to add topic', 'error');
+                }
+            } catch (err) {
+                console.log(err);
+                showMessage('Error adding topic', 'error');
+            }
+
+            this.textContent = 'Add Topic';
+            this.disabled = false;
+        });
+
+        // ─── TOPICS GRID ──────────────────────────────────────────────────────
         function updateTopicsGrid() {
             const grid = document.getElementById('topics-grid');
             const emptyState = document.getElementById('empty-state');
-            
-            let filteredData = studyData;
+
+            let filtered = topicsData;
             if (currentFilter !== 'all') {
-                filteredData = studyData.filter(topic => 
-                    topic.category.toLowerCase() === currentFilter.toLowerCase()
-                );
+                filtered = topicsData.filter(t => t.category.toLowerCase() === currentFilter.toLowerCase());
             }
-            
-            if (filteredData.length === 0) {
+
+            if (filtered.length === 0) {
                 grid.innerHTML = '';
                 emptyState.classList.remove('hidden');
                 return;
             }
-            
+
             emptyState.classList.add('hidden');
-            
-            grid.innerHTML = filteredData.map(topic => `
-                <div class="topic-card bg-white rounded-xl shadow-lg p-6 transition-all" data-topic-id="${topic.id}">
+
+            grid.innerHTML = filtered.map(topic => `
+                <div class="topic-card bg-white rounded-xl shadow-lg p-6" data-topic-id="${topic._id}">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <h4 class="text-lg font-semibold text-gray-900">${topic.topic_name}</h4>
                             <p class="text-sm text-gray-600">${topic.category}</p>
                         </div>
-                        <span class="level-badge px-3 py-1 text-xs font-medium rounded-full ${getLevelColor(topic.completion_level)}">
+                        <span class="px-3 py-1 text-xs font-medium rounded-full ${getLevelColor(topic.completion_level)}">
                             ${topic.completion_level}
                         </span>
                     </div>
-                    
                     <div class="space-y-3">
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Study Time</span>
@@ -434,7 +628,6 @@
                             <span class="font-medium">${topic.notes_viewed}</span>
                         </div>
                     </div>
-                    
                     <div class="mt-4 pt-4 border-t border-gray-200">
                         <div class="flex justify-between items-center text-xs text-gray-500">
                             <span>Last studied</span>
@@ -443,19 +636,130 @@
                     </div>
                 </div>
             `).join('');
-            
-            // Add click listeners to topic cards
+
             grid.querySelectorAll('.topic-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const topicId = this.dataset.topicId;
-                    openTopicModal(topicId);
+                card.addEventListener('click', function () {
+                    openTopicModal(this.dataset.topicId);
                 });
             });
         }
 
-        // Get level color class
+        // ─── FILTERS ──────────────────────────────────────────────────────────
+        document.getElementById('filter-all').addEventListener('click', () => setFilter('all'));
+        document.getElementById('filter-mathematics').addEventListener('click', () => setFilter('mathematics'));
+        document.getElementById('filter-science').addEventListener('click', () => setFilter('science'));
+        document.getElementById('filter-technology').addEventListener('click', () => setFilter('technology'));
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+                btn.className = 'px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300';
+            });
+            document.getElementById(`filter-${filter}`).className = 'px-3 py-1 text-sm bg-indigo-600 text-white rounded-full';
+            updateTopicsGrid();
+        }
+
+        // ─── MODAL ────────────────────────────────────────────────────────────
+        function openTopicModal(topicId) {
+            selectedTopic = topicsData.find(t => t._id === topicId);
+            if (!selectedTopic) return;
+
+            document.getElementById('modal-topic-name').textContent = selectedTopic.topic_name;
+            document.getElementById('modal-hours').textContent = `${selectedTopic.hours_studied} hours`;
+            document.getElementById('modal-level').textContent = selectedTopic.completion_level;
+            document.getElementById('modal-videos').textContent = selectedTopic.videos_watched;
+            document.getElementById('modal-notes').textContent = selectedTopic.notes_viewed;
+
+            document.getElementById('add-hours').value = '';
+            document.getElementById('add-videos').value = '';
+            document.getElementById('add-notes').value = '';
+
+            document.getElementById('topic-modal').classList.remove('hidden');
+            document.getElementById('topic-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('topic-modal').classList.add('hidden');
+            document.getElementById('topic-modal').classList.remove('flex');
+            selectedTopic = null;
+        }
+
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('cancel-update-btn').addEventListener('click', closeModal);
+        document.getElementById('topic-modal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ─── SAVE PROGRESS ────────────────────────────────────────────────────
+        document.getElementById('save-progress-btn').addEventListener('click', async function () {
+            if (!selectedTopic) return;
+
+            const hours_studied = parseFloat(document.getElementById('add-hours').value) || 0;
+            const videos_watched = parseInt(document.getElementById('add-videos').value) || 0;
+            const notes_viewed = parseInt(document.getElementById('add-notes').value) || 0;
+
+            if (hours_studied === 0 && videos_watched === 0 && notes_viewed === 0) {
+                showMessage('Please enter some progress to update', 'error');
+                return;
+            }
+
+            this.textContent = 'Saving...';
+            this.disabled = true;
+
+            try {
+                const res = await fetch(`${BASE_URL}/update-topic/${selectedTopic._id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ hours_studied, videos_watched, notes_viewed })
+                });
+
+                if (res.ok) {
+                    showMessage('Progress updated!', 'success');
+                    closeModal();
+                    await loadAllData();
+                } else {
+                    showMessage('Failed to update progress', 'error');
+                }
+            } catch (err) {
+                console.log(err);
+                showMessage('Error updating progress', 'error');
+            }
+
+            this.textContent = 'Save Progress';
+            this.disabled = false;
+        });
+
+        // ─── DELETE TOPIC ─────────────────────────────────────────────────────
+        document.getElementById('delete-topic-btn').addEventListener('click', async function () {
+            if (!selectedTopic) return;
+
+            this.textContent = 'Deleting...';
+            this.disabled = true;
+
+            try {
+                const res = await fetch(`${BASE_URL}/delete-topic/${selectedTopic._id}`, {
+                    method: "DELETE"
+                });
+
+                if (res.ok) {
+                    showMessage('Topic deleted!', 'success');
+                    closeModal();
+                    await loadAllData();
+                } else {
+                    showMessage('Failed to delete topic', 'error');
+                }
+            } catch (err) {
+                console.log(err);
+                showMessage('Error deleting topic', 'error');
+            }
+
+            this.textContent = 'Delete Topic';
+            this.disabled = false;
+        });
+
+        // ─── HELPERS ──────────────────────────────────────────────────────────
         function getLevelColor(level) {
-            switch(level) {
+            switch (level) {
                 case 'Beginner': return 'bg-green-100 text-green-800';
                 case 'Intermediate': return 'bg-blue-100 text-blue-800';
                 case 'Advanced': return 'bg-purple-100 text-purple-800';
@@ -464,294 +768,36 @@
             }
         }
 
-        // Format date
         function formatDate(dateString) {
             const date = new Date(dateString);
             const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays === 1) return 'Today';
-            if (diffDays === 2) return 'Yesterday';
-            if (diffDays <= 7) return `${diffDays - 1} days ago`;
+            const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays <= 7) return `${diffDays} days ago`;
             return date.toLocaleDateString();
         }
 
-        // Filter functionality
-        document.getElementById('filter-all').addEventListener('click', () => setFilter('all'));
-        document.getElementById('filter-mathematics').addEventListener('click', () => setFilter('mathematics'));
-        document.getElementById('filter-science').addEventListener('click', () => setFilter('science'));
-        document.getElementById('filter-technology').addEventListener('click', () => setFilter('technology'));
-
-        function setFilter(filter) {
-            currentFilter = filter;
-            
-            // Update button styles
-            document.querySelectorAll('[id^="filter-"]').forEach(btn => {
-                btn.className = 'px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300';
-            });
-            document.getElementById(`filter-${filter}`).className = 'px-3 py-1 text-sm bg-indigo-600 text-white rounded-full';
-            
-            updateTopicsGrid();
-        }
-
-        // Topic modal functionality
-        function openTopicModal(topicId) {
-            selectedTopic = studyData.find(topic => topic.id === topicId);
-            if (!selectedTopic) return;
-            
-            document.getElementById('modal-topic-name').textContent = selectedTopic.topic_name;
-            document.getElementById('modal-hours').textContent = `${selectedTopic.hours_studied} hours`;
-            document.getElementById('modal-level').textContent = selectedTopic.completion_level;
-            document.getElementById('modal-videos').textContent = selectedTopic.videos_watched;
-            document.getElementById('modal-notes').textContent = selectedTopic.notes_viewed;
-            
-            document.getElementById('topic-modal').classList.remove('hidden');
-            document.getElementById('topic-modal').classList.add('flex');
-        }
-
-        // Close modal
-        document.getElementById('close-modal').addEventListener('click', closeModal);
-        document.getElementById('cancel-update-btn').addEventListener('click', closeModal);
-
-        function closeModal() {
-            document.getElementById('topic-modal').classList.add('hidden');
-            document.getElementById('topic-modal').classList.remove('flex');
-            document.getElementById('update-progress-form').reset();
-            selectedTopic = null;
-        }
-
-        // Save progress
-        document.getElementById('save-progress-btn').addEventListener('click', async function() {
-            if (!selectedTopic) return;
-            
-            const addHours = parseFloat(document.getElementById('add-hours').value) || 0;
-            const addVideos = parseInt(document.getElementById('add-videos').value) || 0;
-            const addNotes = parseInt(document.getElementById('add-notes').value) || 0;
-            
-            if (addHours === 0 && addVideos === 0 && addNotes === 0) {
-                showMessage('Please enter some progress to update', 'error');
-                return;
-            }
-            
-            this.textContent = 'Saving...';
-            this.disabled = true;
-            
-            const updatedTopic = {
-                ...selectedTopic,
-                hours_studied: selectedTopic.hours_studied + addHours,
-                videos_watched: selectedTopic.videos_watched + addVideos,
-                notes_viewed: selectedTopic.notes_viewed + addNotes,
-                last_studied: new Date().toISOString()
-            };
-            
-            const result = await window.dataSdk.update(updatedTopic);
-            
-            if (result.isOk) {
-                showMessage('Progress updated successfully!', 'success');
-                closeModal();
-            } else {
-                showMessage('Failed to update progress. Please try again.', 'error');
-            }
-            
-            this.textContent = 'Save Progress';
-            this.disabled = false;
-        });
-
-        // Delete topic
-        document.getElementById('delete-topic-btn').addEventListener('click', async function() {
-            if (!selectedTopic) return;
-            
-            this.textContent = 'Deleting...';
-            this.disabled = true;
-            
-            const result = await window.dataSdk.delete(selectedTopic);
-            
-            if (result.isOk) {
-                showMessage('Topic deleted successfully!', 'success');
-                closeModal();
-            } else {
-                showMessage('Failed to delete topic. Please try again.', 'error');
-            }
-            
-            this.textContent = 'Delete Topic';
-            this.disabled = false;
-        });
-
-        // Update progress chart
-        function updateProgressChart() {
-            const ctx = document.getElementById('progressChart').getContext('2d');
-            
-            if (progressChart) {
-                progressChart.destroy();
-            }
-            
-            // Generate last 7 days data
-            const last7Days = [];
-            const hoursData = [];
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                last7Days.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
-                
-                // Simulate daily hours (in real app, this would be calculated from actual data)
-                const dailyHours = Math.random() * 3 + 1;
-                hoursData.push(dailyHours);
-            }
-            
-            progressChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: last7Days,
-                    datasets: [{
-                        label: 'Hours Studied',
-                        data: hoursData,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update badges
-        function updateBadges() {
-            const container = document.getElementById('badges-container');
-            const totalHours = studyData.reduce((sum, topic) => sum + topic.hours_studied, 0);
-            const topicsCount = studyData.length;
-            
-            const badges = [];
-            
-            // Hour-based badges
-            if (totalHours >= 1) badges.push({ name: 'First Hour', icon: '⏰', color: 'bg-blue-100 text-blue-800' });
-            if (totalHours >= 10) badges.push({ name: '10 Hours', icon: '📚', color: 'bg-green-100 text-green-800' });
-            if (totalHours >= 50) badges.push({ name: 'Dedicated Learner', icon: '🎓', color: 'bg-purple-100 text-purple-800' });
-            if (totalHours >= 100) badges.push({ name: 'Study Master', icon: '👑', color: 'bg-yellow-100 text-yellow-800' });
-            
-            // Topic-based badges
-            if (topicsCount >= 1) badges.push({ name: 'Explorer', icon: '🗺️', color: 'bg-indigo-100 text-indigo-800' });
-            if (topicsCount >= 5) badges.push({ name: 'Multi-Subject', icon: '🌟', color: 'bg-pink-100 text-pink-800' });
-            if (topicsCount >= 10) badges.push({ name: 'Knowledge Seeker', icon: '🔍', color: 'bg-orange-100 text-orange-800' });
-            
-            container.innerHTML = badges.length > 0 ? badges.map(badge => `
-                <div class="badge-glow flex items-center p-3 ${badge.color} rounded-lg">
-                    <span class="text-2xl mr-3">${badge.icon}</span>
-                    <div>
-                        <h4 class="font-semibold">${badge.name}</h4>
-                        <p class="text-xs opacity-75">Achievement unlocked!</p>
-                    </div>
-                </div>
-            `).join('') : `
-                <div class="text-center text-gray-500 py-8">
-                    <p>Start studying to earn badges!</p>
-                </div>
-            `;
-        }
-
-        // Message display function
         function showMessage(text, type) {
-            const messageContainer = document.getElementById('message-container');
-            const messageDiv = document.createElement('div');
-            
-            let bgColor = 'bg-blue-500';
-            if (type === 'error') bgColor = 'bg-red-500';
-            if (type === 'success') bgColor = 'bg-green-500';
-            if (type === 'info') bgColor = 'bg-blue-500';
-            
-            messageDiv.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg mb-2 transform transition-all duration-300`;
-            messageDiv.textContent = text;
-            
-            messageContainer.appendChild(messageDiv);
-            
+            const container = document.getElementById('message-container');
+            const div = document.createElement('div');
+            const color = type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-blue-500';
+            div.className = `${color} text-white px-6 py-3 rounded-lg shadow-lg mb-2 transform transition-all duration-300`;
+            div.textContent = text;
+            container.appendChild(div);
+            setTimeout(() => { div.style.transform = 'translateX(0)'; }, 10);
             setTimeout(() => {
-                messageDiv.style.transform = 'translateX(0)';
-            }, 10);
-            
-            setTimeout(() => {
-                messageDiv.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (messageDiv.parentNode) {
-                        messageDiv.parentNode.removeChild(messageDiv);
-                    }
-                }, 300);
+                div.style.transform = 'translateX(100%)';
+                setTimeout(() => { if (div.parentNode) div.parentNode.removeChild(div); }, 300);
             }, 4000);
         }
 
-        // Close modal when clicking outside
-        document.getElementById('topic-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // Element SDK implementation
-        async function onConfigChange(config) {
-            const navLogo = document.getElementById('nav-logo');
-            const pageTitle = document.getElementById('page-title');
-            const welcomeMessage = document.getElementById('welcome-message');
-
-            if (navLogo) navLogo.textContent = config.company_name || defaultConfig.company_name;
-            if (pageTitle) pageTitle.textContent = config.page_title || defaultConfig.page_title;
-            if (welcomeMessage) welcomeMessage.textContent = config.welcome_message || defaultConfig.welcome_message;
-        }
-
-        function mapToCapabilities(config) {
-            return {
-                recolorables: [],
-                borderables: [],
-                fontEditable: undefined,
-                fontSizeable: undefined
-            };
-        }
-
-        function mapToEditPanelValues(config) {
-            return new Map([
-                ["company_name", config.company_name || defaultConfig.company_name],
-                ["page_title", config.page_title || defaultConfig.page_title],
-                ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
-            ]);
-        }
-
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDataSDK();
-            updateProgressChart();
-            
-            // Initialize Element SDK
-            if (window.elementSdk) {
-                window.elementSdk.init({
-                    defaultConfig,
-                    onConfigChange,
-                    mapToCapabilities,
-                    mapToEditPanelValues
-                });
-            }
+        // ─── INIT ─────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
+            updateProgressChart(); // show empty chart first
+            loadAllData();         // then fill from MongoDB
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9983529085147f8a',t:'MTc2MjA4MzI2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
+
 </html>
