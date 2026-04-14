@@ -1,409 +1,224 @@
 <!doctype html>
 <html lang="en">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Thinkimation</title>
-  <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-        body {
-            box-sizing: border-box;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .form-transition {
-            transition: all 0.3s ease;
-        }
-        
-        .input-focus:focus {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-        }
-        
-        .btn-hover:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .social-btn:hover {
-            transform: translateY(-1px);
-        }
-        
-        .form-container {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-        }
-    </style>
-  <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="min-h-full gradient-bg"><!-- Navigation -->
-  <nav class="bg-white/90 backdrop-blur-sm shadow-sm border-b">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-     <div class="flex items-center">
-      <div class="flex-shrink-0">
-       <h1 id="nav-logo" class="text-2xl font-bold text-indigo-600">Thinkimation</h1>
+    body { box-sizing: border-box; }
+    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .form-transition { transition: all 0.3s ease; }
+    .input-focus:focus { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15); }
+    .btn-hover:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+    .form-container { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.95); }
+    @view-transition { navigation: auto; }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg">
+
+  <!-- Navigation (logo only on login page) -->
+  <nav class="bg-white/80 backdrop-blur-md shadow-lg border-b border-indigo-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          Thinkimation
+        </h1>
       </div>
-     </div>
-     <div class="flex items-center space-x-4">
-        <div class="ml-10 flex items-baseline space-x-4">
-  <a href="landingpage.html" class="text-gray-900 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
-  <a href="profile.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Profile</a>
-  <a href="userdata.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Study Dashboard</a>
-  <a href="pormodoropage.html" class="text-gray-500 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Pomodoro</a>
-  <a href="login.html" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">Login/Signup</a>
-</div>
-     </div>
     </div>
-   </div>
   </nav>
-  
+
   <!-- Main Content -->
   <main class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-   <div class="max-w-md w-full space-y-8"><!-- Login Form -->
-    <div id="login-form" class="form-container rounded-2xl shadow-2xl p-8">
-     <div class="text-center">
-      <h2 id="login-title" class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-      <p id="login-subtitle" class="text-gray-600 mb-8">Sign in to your account</p>
-     </div>
-     <form id="login-form-element" class="space-y-6">
-      <div><label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email address</label> <input id="login-email" name="email" type="email" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Enter your email">
+    <div class="max-w-md w-full space-y-8">
+
+      <!-- Login Form -->
+      <div id="login-form" class="form-container rounded-2xl shadow-2xl p-8">
+        <div class="text-center">
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+          <p class="text-gray-600 mb-8">Sign in to your account</p>
+        </div>
+        <form id="login-form-element" class="space-y-6">
+          <div>
+            <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email address</label>
+            <input id="login-email" type="email" required
+              class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              placeholder="Enter your email">
+          </div>
+          <div>
+            <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <input id="login-password" type="password" required
+              class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              placeholder="Enter your password">
+          </div>
+          <button type="submit"
+            class="btn-hover w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-lg transition-all">
+            Log In
+          </button>
+        </form>
+        <p class="mt-6 text-center text-sm text-gray-600">
+          Don't have an account?
+          <button id="show-signup-btn" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign up</button>
+        </p>
       </div>
-      <div><label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label> <input id="login-password" name="password" type="password" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Enter your password">
+
+      <!-- Signup Form -->
+      <div id="signup-form" class="form-container rounded-2xl shadow-2xl p-8 hidden">
+        <div class="text-center">
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
+          <p class="text-gray-600 mb-8">Join thousands of learners</p>
+        </div>
+        <form id="signup-form-element" class="space-y-6">
+          <div>
+            <label for="signup-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+            <input id="signup-name" type="text" required
+              class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              placeholder="Enter your full name">
+          </div>
+          <div>
+            <label for="signup-email" class="block text-sm font-medium text-gray-700 mb-2">Email address</label>
+            <input id="signup-email" type="email" required
+              class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              placeholder="Enter your email">
+          </div>
+          <div>
+            <label for="signup-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <input id="signup-password" type="password" required
+              class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              placeholder="Create a password">
+          </div>
+          <div>
+            <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+            <input id="confirm-password" type="password" required
+              class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              placeholder="Confirm your password">
+          </div>
+          <button type="submit"
+            class="btn-hover w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-lg transition-all">
+            Create Account
+          </button>
+        </form>
+        <p class="mt-6 text-center text-sm text-gray-600">
+          Already have an account?
+          <button id="show-login-btn" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign in</button>
+        </p>
       </div>
-      <div class="flex items-center justify-between">
-       <div class="flex items-center"><input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"> <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
-       </div><button type="button" id="forgot-password-btn" class="text-sm text-indigo-600 hover:text-indigo-500"> Forgot password? </button>
-      </div><button type="submit" class="btn-hover w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-lg transition-all"> Sign In </button>
-     </form>
-     <div class="mt-6">
-      <div class="relative">
-       <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-gray-300"></div>
-       </div>
-       <div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500">Or continue with</span>
-       </div>
-      </div><button type="button" id="google-login-btn" class="social-btn mt-4 w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-50 transition-all">
-       <svg class="w-5 h-5 mr-3" viewbox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /> <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /> <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /> <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-       </svg> Continue with Google </button>
-     </div>
-     <p class="mt-6 text-center text-sm text-gray-600">Don't have an account? <button id="show-signup-btn" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign up</button></p>
-    </div><!-- Signup Form -->
-    <div id="signup-form" class="form-container rounded-2xl shadow-2xl p-8 hidden">
-     <div class="text-center">
-      <h2 id="signup-title" class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-      <p id="signup-subtitle" class="text-gray-600 mb-8">Join thousands of learners</p>
-     </div>
-     <form id="signup-form-element" class="space-y-6">
-      <div><label for="signup-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label> <input id="signup-name" name="name" type="text" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Enter your full name">
-      </div>
-      <div><label for="signup-email" class="block text-sm font-medium text-gray-700 mb-2">Email address</label> <input id="signup-email" name="email" type="email" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Enter your email">
-      </div>
-      <div><label for="signup-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label> <input id="signup-password" name="password" type="password" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Create a password">
-      </div>
-      <div><label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label> <input id="confirm-password" name="confirm-password" type="password" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Confirm your password">
-      </div>
-      <div class="flex items-center"><input id="terms-checkbox" name="terms" type="checkbox" required class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"> <label for="terms-checkbox" class="ml-2 block text-sm text-gray-700"> I agree to the <a href="#" class="text-indigo-600 hover:text-indigo-500">Terms of Service</a> and <a href="#" class="text-indigo-600 hover:text-indigo-500">Privacy Policy</a> </label>
-      </div><button type="submit" class="btn-hover w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-lg transition-all"> Create Account </button>
-     </form>
-     <div class="mt-6">
-      <div class="relative">
-       <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-gray-300"></div>
-       </div>
-       <div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500">Or continue with</span>
-       </div>
-      </div><button type="button" id="google-signup-btn" class="social-btn mt-4 w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-50 transition-all">
-       <svg class="w-5 h-5 mr-3" viewbox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /> <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /> <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /> <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-       </svg> Sign up with Google </button>
-     </div>
-     <p class="mt-6 text-center text-sm text-gray-600">Already have an account? <button id="show-login-btn" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign in</button></p>
-    </div><!-- Forgot Password Form -->
-    <div id="forgot-password-form" class="form-container rounded-2xl shadow-2xl p-8 hidden">
-     <div class="text-center">
-      <h2 class="text-3xl font-bold text-gray-900 mb-2">Reset Password</h2>
-      <p class="text-gray-600 mb-8">Enter your email to receive reset instructions</p>
-     </div>
-     <form id="forgot-password-form-element" class="space-y-6">
-      <div><label for="reset-email" class="block text-sm font-medium text-gray-700 mb-2">Email address</label> <input id="reset-email" name="email" type="email" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Enter your email">
-      </div><button type="submit" class="btn-hover w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-lg transition-all"> Send Reset Link </button>
-     </form>
-     <p class="mt-6 text-center text-sm text-gray-600">Remember your password? <button id="back-to-login-btn" class="text-indigo-600 hover:text-indigo-500 font-medium">Back to login</button></p>
+
     </div>
-   </div>
   </main>
-  
-  <!-- Success/Error Messages -->
+
+  <!-- Messages -->
   <div id="message-container" class="fixed top-4 right-4 z-50"></div>
+
   <script>
-        // Configuration object for editable features
-        const defaultConfig = {
-            company_name: "Thinkimation",
-            login_title: "Welcome Back",
-            login_subtitle: "Sign in to your account",
-            signup_title: "Create Account",
-            signup_subtitle: "Join thousands of learners"
-        };
+    // If already logged in, skip login page entirely
+    if (localStorage.getItem("userId")) {
+      window.location.href = "landingpage.html";
+    }
 
-        // Form elements
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const forgotPasswordForm = document.getElementById('forgot-password-form');
-        
-        // Navigation buttons
-        const loginNavBtn = document.getElementById('login-nav-btn');
-        const signupNavBtn = document.getElementById('signup-nav-btn');
-        
-        // Form switching buttons
-        const showSignupBtn = document.getElementById('show-signup-btn');
-        const showLoginBtn = document.getElementById('show-login-btn');
-        const forgotPasswordBtn = document.getElementById('forgot-password-btn');
-        const backToLoginBtn = document.getElementById('back-to-login-btn');
-        
-        // Form elements
-        const loginFormElement = document.getElementById('login-form-element');
-        const signupFormElement = document.getElementById('signup-form-element');
-        const forgotPasswordFormElement = document.getElementById('forgot-password-form-element');
-        
-        // Social login buttons
-        const googleLoginBtn = document.getElementById('google-login-btn');
-        const googleSignupBtn = document.getElementById('google-signup-btn');
+    // ─── TOGGLE FORMS ─────────────────────────────────────────────────────────
+    document.getElementById('show-signup-btn').addEventListener('click', function () {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('signup-form').classList.remove('hidden');
+    });
 
-        // Form switching functions
-        function showLoginForm() {
-            loginForm.classList.remove('hidden');
-            signupForm.classList.add('hidden');
-            forgotPasswordForm.classList.add('hidden');
-            updateNavButtons('login');
-        }
+    document.getElementById('show-login-btn').addEventListener('click', function () {
+      document.getElementById('signup-form').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+    });
 
-        function showSignupForm() {
-            loginForm.classList.add('hidden');
-            signupForm.classList.remove('hidden');
-            forgotPasswordForm.classList.add('hidden');
-            updateNavButtons('signup');
-        }
+    // ─── LOGIN ────────────────────────────────────────────────────────────────
+    document.getElementById('login-form-element').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-        function showForgotPasswordForm() {
-            loginForm.classList.add('hidden');
-            signupForm.classList.add('hidden');
-            forgotPasswordForm.classList.remove('hidden');
-        }
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn = this.querySelector('button[type="submit"]');
 
-        function updateNavButtons(activeForm) {
-            if (activeForm === 'login') {
-                loginNavBtn.className = "text-indigo-600 border border-indigo-600 bg-indigo-50 px-4 py-2 rounded-md text-sm font-medium";
-                signupNavBtn.className = "text-gray-700 hover:text-indigo-600 px-4 py-2 rounded-md text-sm font-medium";
-            } else {
-                loginNavBtn.className = "text-gray-700 hover:text-indigo-600 px-4 py-2 rounded-md text-sm font-medium";
-                signupNavBtn.className = "bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium";
-            }
-        }
+      btn.textContent = 'Signing in...';
+      btn.disabled = true;
 
-        // Event listeners for form switching
-        loginNavBtn.addEventListener('click', showLoginForm);
-        signupNavBtn.addEventListener('click', showSignupForm);
-        showSignupBtn.addEventListener('click', showSignupForm);
-        showLoginBtn.addEventListener('click', showLoginForm);
-        forgotPasswordBtn.addEventListener('click', showForgotPasswordForm);
-        backToLoginBtn.addEventListener('click', showLoginForm);
-
-        // Form submission handlers
-        loginFormElement.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                showMessage('Please fill in all fields', 'error');
-                return;
-            }
-            
-            // Simulate login process
-            showMessage('Signing you in...', 'info');
-            setTimeout(() => {
-                showMessage('Login successful! Redirecting...', 'success');
-            }, 1500);
+      try {
+        const res = await fetch("http://localhost:5000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
         });
 
-        signupFormElement.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const termsAccepted = document.getElementById('terms-checkbox').checked;
-            
-            if (!name || !email || !password || !confirmPassword) {
-                showMessage('Please fill in all fields', 'error');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showMessage('Passwords do not match', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showMessage('Password must be at least 6 characters', 'error');
-                return;
-            }
-            
-            if (!termsAccepted) {
-                showMessage('Please accept the terms and conditions', 'error');
-                return;
-            }
-            
-            // Simulate signup process
-            showMessage('Creating your account...', 'info');
-            setTimeout(() => {
-                showMessage('Account created successfully! Welcome to Thinkimation!', 'success');
-            }, 1500);
-        });
+        const data = await res.json();
 
-        forgotPasswordFormElement.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('reset-email').value;
-            
-            if (!email) {
-                showMessage('Please enter your email address', 'error');
-                return;
-            }
-            
-            // Simulate password reset
-            showMessage('Sending reset link...', 'info');
-            setTimeout(() => {
-                showMessage('Reset link sent! Check your email.', 'success');
-            }, 1500);
-        });
-
-        // Social login handlers
-        googleLoginBtn.addEventListener('click', function() {
-            showMessage('Redirecting to Google...', 'info');
-            setTimeout(() => {
-                showMessage('Google login successful!', 'success');
-            }, 1500);
-        });
-
-        googleSignupBtn.addEventListener('click', function() {
-            showMessage('Redirecting to Google...', 'info');
-            setTimeout(() => {
-                showMessage('Google signup successful!', 'success');
-            }, 1500);
-        });
-
-        // Message display function
-        function showMessage(text, type) {
-            const messageContainer = document.getElementById('message-container');
-            const messageDiv = document.createElement('div');
-            
-            let bgColor = 'bg-blue-500';
-            if (type === 'error') bgColor = 'bg-red-500';
-            if (type === 'success') bgColor = 'bg-green-500';
-            if (type === 'info') bgColor = 'bg-blue-500';
-            
-            messageDiv.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg mb-2 transform transition-all duration-300`;
-            messageDiv.textContent = text;
-            
-            messageContainer.appendChild(messageDiv);
-            
-            // Animate in
-            setTimeout(() => {
-                messageDiv.style.transform = 'translateX(0)';
-            }, 10);
-            
-            // Remove after 4 seconds
-            setTimeout(() => {
-                messageDiv.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (messageDiv.parentNode) {
-                        messageDiv.parentNode.removeChild(messageDiv);
-                    }
-                }, 300);
-            }, 4000);
+        if (data.userId) {
+          localStorage.setItem("userId", data.userId);
+          showMessage("Login successful! Redirecting...", "success");
+          setTimeout(() => {
+            window.location.href = "landingpage.html";
+          }, 800);
+        } else {
+          showMessage("Invalid email or password", "error");
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
         }
+      } catch (err) {
+        console.log(err);
+        showMessage("Server error. Is your backend running?", "error");
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
+    });
 
-        // Password validation
-        document.getElementById('signup-password').addEventListener('input', function() {
-            const password = this.value;
-            const confirmPassword = document.getElementById('confirm-password');
-            
-            if (password.length > 0 && password.length < 6) {
-                this.style.borderColor = '#ef4444';
-            } else {
-                this.style.borderColor = '#d1d5db';
-            }
-            
-            // Check confirm password match
-            if (confirmPassword.value && password !== confirmPassword.value) {
-                confirmPassword.style.borderColor = '#ef4444';
-            } else if (confirmPassword.value) {
-                confirmPassword.style.borderColor = '#10b981';
-            }
+    // ─── SIGNUP ───────────────────────────────────────────────────────────────
+    document.getElementById('signup-form-element').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+      const btn = this.querySelector('button[type="submit"]');
+
+      if (password !== confirm) {
+        showMessage("Passwords do not match", "error");
+        return;
+      }
+
+      btn.textContent = 'Creating account...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("http://localhost:5000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
         });
 
-        document.getElementById('confirm-password').addEventListener('input', function() {
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = this.value;
-            
-            if (confirmPassword && password !== confirmPassword) {
-                this.style.borderColor = '#ef4444';
-            } else if (confirmPassword) {
-                this.style.borderColor = '#10b981';
-            }
-        });
-
-        // Element SDK implementation
-        async function onConfigChange(config) {
-            const navLogo = document.getElementById('nav-logo');
-            const loginTitle = document.getElementById('login-title');
-            const loginSubtitle = document.getElementById('login-subtitle');
-            const signupTitle = document.getElementById('signup-title');
-            const signupSubtitle = document.getElementById('signup-subtitle');
-
-            if (navLogo) navLogo.textContent = config.company_name || defaultConfig.company_name;
-            if (loginTitle) loginTitle.textContent = config.login_title || defaultConfig.login_title;
-            if (loginSubtitle) loginSubtitle.textContent = config.login_subtitle || defaultConfig.login_subtitle;
-            if (signupTitle) signupTitle.textContent = config.signup_title || defaultConfig.signup_title;
-            if (signupSubtitle) signupSubtitle.textContent = config.signup_subtitle || defaultConfig.signup_subtitle;
+        if (res.ok) {
+          showMessage("Account created! Please sign in.", "success");
+          setTimeout(() => {
+            document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById('login-form').classList.remove('hidden');
+          }, 1000);
+        } else {
+          showMessage("Failed to create account", "error");
         }
+      } catch (err) {
+        console.log(err);
+        showMessage("Server error. Is your backend running?", "error");
+      }
 
-        function mapToCapabilities(config) {
-            return {
-                recolorables: [],
-                borderables: [],
-                fontEditable: undefined,
-                fontSizeable: undefined
-            };
-        }
+      btn.textContent = 'Create Account';
+      btn.disabled = false;
+    });
 
-        function mapToEditPanelValues(config) {
-            return new Map([
-                ["company_name", config.company_name || defaultConfig.company_name],
-                ["login_title", config.login_title || defaultConfig.login_title],
-                ["login_subtitle", config.login_subtitle || defaultConfig.login_subtitle],
-                ["signup_title", config.signup_title || defaultConfig.signup_title],
-                ["signup_subtitle", config.signup_subtitle || defaultConfig.signup_subtitle]
-            ]);
-        }
-
-        // Initialize Element SDK
-        if (window.elementSdk) {
-            window.elementSdk.init({
-                defaultConfig,
-                onConfigChange,
-                mapToCapabilities,
-                mapToEditPanelValues
-            });
-        }
-
-        // Initialize with login form
-        showLoginForm();
-    </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99834a92f7a2179c',t:'MTc2MjA4MjkzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    // ─── MESSAGES ─────────────────────────────────────────────────────────────
+    function showMessage(text, type) {
+      const container = document.getElementById('message-container');
+      const div = document.createElement('div');
+      const color = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+      div.className = `${color} text-white px-6 py-3 rounded-lg shadow-lg mb-2 transition-all duration-300`;
+      div.textContent = text;
+      container.appendChild(div);
+      setTimeout(() => { if (div.parentNode) div.parentNode.removeChild(div); }, 3000);
+    }
+  </script>
+</body>
 </html>
