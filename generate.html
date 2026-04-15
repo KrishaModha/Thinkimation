@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thinkimation – Generate</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    .nav-tab {
+  position: relative;
+  color: #6b7280;
+}
+.nav-tab:hover .nav-text {
+  color: #4f46e5;
+}
+.nav-tab .nav-text {
+  display: block;
+  transition: all 0.3s ease;
+}
+.nav-tab-active {
+  color: #4f46e5 !important;
+  background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(168,85,247,0.1));
+  transform: translateY(-1px);
+}
+
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    .gradient-hero {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #9333ea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-shadow {
+      box-shadow: 0 4px 24px rgba(99, 102, 241, 0.10), 0 1.5px 6px rgba(0,0,0,0.06);
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-gradient:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-gradient:active { transform: translateY(0); }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(99,102,241,0.18);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-link {
+      transition: color 0.15s;
+    }
+    .nav-link:hover { color: #6366f1; }
+
+    select, input[type="text"] {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    select:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    }
+
+    .mindmap-node {
+      position: relative;
+    }
+    .mindmap-node::before {
+      content: '';
+      position: absolute;
+      left: -16px; top: 50%;
+      width: 10px; height: 2px;
+      background: #c4b5fd;
+      transform: translateY(-50%);
+    }
+    .mindmap-root::before { display: none; }
+
+    .output-card {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-slate-50 flex flex-col">
+
+    <!-- Navigation -->
+<nav class="bg-white/80 backdrop-blur-md shadow-lg border-b border-indigo-100 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <h1 id="nav-logo" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Thinkimation</h1>
+        </div>
+      </div>
+      <!-- Desktop Nav -->
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-1">
+          <a href="landingpage.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+            <span class="nav-text">Home</span>
+            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+          </a>
+          <a href="generate.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl bg-indigo-50 text-indigo-700">
+            <span class="nav-text">Generate</span>
+            <span class="nav-underline absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></span>
+          </a>
+          <a href="userdata.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+            <span class="nav-text">Dashboard</span>
+            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+          </a>
+          <a href="pormodoropage.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+            <span class="nav-text">Pomodoro</span>
+            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+          </a>
+          <a href="profile.html" class="nav-tab group relative px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl">
+            <span class="nav-text">Profile</span>
+            <span class="nav-underline absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-500"></span>
+          </a>
+        </div>
+      </div>
+      <!-- Mobile menu button 
+      <div class="md:hidden flex items-center space-x-2">
+        <a href="login.html" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:scale-105 transition-all duration-300">Login</a>
+        <button id="mobile-menu-btn" class="p-2 rounded-xl hover:bg-indigo-50">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div> -->
+    </div>
+  </div>
+</nav>
+
+
+  <main class="flex-1 w-full overflow-auto"><!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+   <section class="gradient-hero text-white py-16 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto text-center">
+     <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-xs font-semibold px-4 py-1.5 rounded-full mb-5"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI-Powered Study Generator
+     </div>
+     <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight mb-4">Generate Smart<br>
+      Study Material</h1>
+     <p id="hero-subtitle" class="text-indigo-100 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">Turn any topic into notes, practice questions, or mindmaps instantly with AI.</p>
+    </div>
+   </section><!-- ═══════════════════════════════ GENERATOR CARD ═══════════════════════════════ -->
+   <section class="px-4 sm:px-6 -mt-8 pb-8">
+    <div class="max-w-2xl mx-auto">
+     <div class="bg-white rounded-2xl card-shadow p-6 sm:p-8"><!-- Card header -->
+      <div class="flex items-center gap-3 mb-6">
+       <div class="w-10 h-10 rounded-xl btn-gradient flex items-center justify-center flex-shrink-0"><i data-lucide="brain" class="w-5 h-5 text-white"></i>
+       </div>
+       <div>
+        <h2 class="text-lg font-bold text-slate-800">Study Material Generator</h2>
+        <p class="text-xs text-slate-400">Powered by AI · Instant results</p>
+       </div>
+      </div><!-- Form -->
+      <div class="space-y-5"><!-- Topic -->
+       <div><label for="topic-input" class="block text-sm font-semibold text-slate-700 mb-1.5">Topic</label> <input id="topic-input" type="text" placeholder="e.g. Photosynthesis, Operating Systems, Probability..." class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 bg-slate-50">
+       </div><!-- Two-col row: Material Type + Difficulty -->
+       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div><label for="material-type" class="block text-sm font-semibold text-slate-700 mb-1.5">Material Type</label> <select id="material-type" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 bg-slate-50 appearance-none cursor-pointer"> <option value="notes">📝 Notes</option> <option value="questions">❓ Practice Questions</option> <option value="mindmap">🧠 Mindmap</option> </select>
+        </div>
+        <div><label for="difficulty" class="block text-sm font-semibold text-slate-700 mb-1.5">Difficulty Level</label> <select id="difficulty" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 bg-slate-50 appearance-none cursor-pointer"> <option value="easy">🟢 Easy</option> <option value="medium">🟡 Medium</option> <option value="exam">🔴 Exam Level</option> </select>
+        </div>
+       </div><!-- Generate button --> <button id="generate-btn" onclick="generateStudyMaterial()" class="btn-gradient w-full text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm mt-2"> <i data-lucide="zap" class="w-4 h-4"></i> Generate Study Material </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- ═══════════════════════════════ LOADING STATE ═══════════════════════════════ -->
+   <section id="loading-section" class="hidden px-4 sm:px-6 pb-8">
+    <div class="max-w-2xl mx-auto">
+     <div class="bg-white rounded-2xl card-shadow p-8 flex flex-col items-center gap-4 text-center">
+      <div class="spinner"></div>
+      <p class="text-slate-600 font-semibold text-sm">Generating your study material...</p>
+      <p class="text-slate-400 text-xs">Our AI is crafting the perfect content for you ✨</p>
+     </div>
+    </div>
+   </section><!-- ═══════════════════════════════ OUTPUT SECTION ═══════════════════════════════ -->
+   <section id="output-section" class="hidden px-4 sm:px-6 pb-16">
+    <div class="max-w-2xl mx-auto">
+     <div id="output-card" class="bg-white rounded-2xl card-shadow p-6 sm:p-8 output-card"><!-- Output header -->
+      <div class="flex items-start justify-between gap-4 mb-5">
+       <div class="flex items-center gap-3">
+        <div id="output-icon" class="w-10 h-10 rounded-xl btn-gradient flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+         <h3 id="output-title" class="text-base font-bold text-slate-800"></h3>
+         <p id="output-meta" class="text-xs text-slate-400"></p>
+        </div>
+       </div><button onclick="copyOutput()" class="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 border border-indigo-100 bg-indigo-50 px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition-colors" aria-label="Copy output"> <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span id="copy-btn-text">Copy</span> </button>
+      </div><!-- Output content -->
+      <div id="output-content" class="text-sm text-slate-700 leading-relaxed"></div><!-- Regenerate -->
+      <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row gap-3"><button onclick="generateStudyMaterial()" class="btn-gradient text-white font-semibold px-5 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"> <i data-lucide="refresh-cw" class="w-4 h-4"></i> Regenerate </button> <button onclick="clearOutput()" class="border border-slate-200 text-slate-600 font-semibold px-5 py-2.5 rounded-xl text-sm hover:bg-slate-50 transition-colors"> Start Over </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- ═══════════════════════════════ INFO STRIP ═══════════════════════════════ -->
+   <section class="px-4 sm:px-6 pb-16">
+    <div class="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
+     <div class="bg-white rounded-xl card-shadow p-4 flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0"><i data-lucide="zap" class="w-4 h-4 text-indigo-500"></i>
+      </div>
+      <div>
+       <p class="text-xs font-bold text-slate-700">Instant</p>
+       <p class="text-xs text-slate-400 mt-0.5">Results in seconds, not hours</p>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl card-shadow p-4 flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0"><i data-lucide="book-open" class="w-4 h-4 text-purple-500"></i>
+      </div>
+      <div>
+       <p class="text-xs font-bold text-slate-700">Adaptive</p>
+       <p class="text-xs text-slate-400 mt-0.5">Tailored to your difficulty level</p>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl card-shadow p-4 flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center flex-shrink-0"><i data-lucide="layers" class="w-4 h-4 text-pink-500"></i>
+      </div>
+      <div>
+       <p class="text-xs font-bold text-slate-700">Multi-format</p>
+       <p class="text-xs text-slate-400 mt-0.5">Notes, questions, mindmaps</p>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main> 
+ 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const currentPage = window.location.pathname.split('/').pop() || 'landingpage.html';
+  const navTabs = document.querySelectorAll('.nav-tab');
+  
+  navTabs.forEach(tab => {
+    const href = tab.getAttribute('href');
+    if (href === currentPage) {
+      tab.classList.add('nav-tab-active');
+      tab.querySelector('.nav-underline').style.width = '100%';
+    }
+  });
+
+  // Smooth scroll & mobile menu
+  document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+    // Add mobile dropdown logic if needed
+  });
+});
+
+    // ── Init Lucide ──
+    lucide.createIcons();
+
+    // ── Auth check & nav state ──
+    function initAuth() {
+      const user = localStorage.getItem("user");
+
+      if (!user) {
+        // Redirect to login
+        // Commented out so you can preview the page without being logged in.
+        // Uncomment the line below for production:
+        // window.location.href = "login.html";
+
+        // For preview: show as guest
+        document.getElementById("nav-auth-loggedout").classList.remove("hidden");
+        document.getElementById("nav-auth-loggedin").classList.add("hidden");
+        document.getElementById("nav-generate-link").classList.add("hidden");
+        document.getElementById("nav-generate-link-mobile").classList.add("hidden");
+      } else {
+        let userData = {};
+        try { userData = JSON.parse(user); } catch(e) { userData = { name: user }; }
+
+        document.getElementById("nav-auth-loggedout").classList.add("hidden");
+        document.getElementById("mobile-auth-loggedout").classList.add("hidden");
+        document.getElementById("nav-auth-loggedin").classList.remove("hidden");
+        document.getElementById("nav-auth-loggedin").classList.add("flex");
+        document.getElementById("mobile-auth-loggedin").classList.remove("hidden");
+        document.getElementById("nav-user-name").textContent = userData.name || "Student";
+
+        document.getElementById("nav-generate-link").classList.remove("hidden");
+        document.getElementById("nav-generate-link-mobile").classList.remove("hidden");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    }
+
+    // ── Mobile menu ──
+    document.getElementById("mobile-menu-btn").addEventListener("click", () => {
+      document.getElementById("mobile-menu").classList.toggle("hidden");
+    });
+
+    // ── Sample content generators (simulated AI) ──
+    const sampleContent = {
+      notes: {
+        easy: (topic) => [
+          { type: "heading", text: `📘 Introduction to ${topic}` },
+          { type: "bullets", items: [
+            `${topic} is a fundamental concept in its field.`,
+            `It can be broken down into several key components.`,
+            `Understanding ${topic} starts with the basic definitions.`,
+            `Real-world examples help make ${topic} easier to grasp.`,
+            `Practice and repetition are key to mastering ${topic}.`
+          ]},
+          { type: "heading", text: `🔑 Key Takeaways` },
+          { type: "bullets", items: [
+            `Always start with the foundational ideas.`,
+            `Connect new concepts to things you already know.`,
+            `Review your notes regularly to retain information.`
+          ]}
+        ],
+        medium: (topic) => [
+          { type: "heading", text: `📘 Core Concepts: ${topic}` },
+          { type: "bullets", items: [
+            `${topic} involves a nuanced interplay of multiple components.`,
+            `The primary mechanism behind ${topic} operates through layered processes.`,
+            `Intermediate learners should pay attention to edge cases in ${topic}.`,
+            `Comparative analysis with related topics reveals deeper patterns.`,
+            `${topic} has significant implications in applied and theoretical contexts.`
+          ]},
+          { type: "heading", text: `🔍 Deep Dive` },
+          { type: "bullets", items: [
+            `Examine how ${topic} interacts with adjacent systems.`,
+            `Identify common misconceptions and address them directly.`,
+            `Use diagrams and models to reinforce understanding.`
+          ]},
+          { type: "heading", text: `💡 Pro Tips` },
+          { type: "bullets", items: [
+            `Link ${topic} to current events or real-world applications.`,
+            `Create your own examples to test comprehension.`
+          ]}
+        ],
+        exam: (topic) => [
+          { type: "heading", text: `📘 Advanced Study Notes: ${topic}` },
+          { type: "bullets", items: [
+            `${topic} requires a rigorous understanding of underlying theory and proofs.`,
+            `Examiners often test boundary conditions and exceptions in ${topic}.`,
+            `Synthesise knowledge from multiple sub-domains to answer complex questions.`,
+            `Critical analysis of ${topic} should include evaluation of limitations.`,
+            `High-level mastery of ${topic} demands both recall and application under time pressure.`
+          ]},
+          { type: "heading", text: `⚠️ Common Exam Traps` },
+          { type: "bullets", items: [
+            `Confusing similar terminology — define each term precisely.`,
+            `Skipping steps in derivations — show all working.`,
+            `Ignoring units or dimensions in quantitative problems.`
+          ]},
+          { type: "heading", text: `✅ Exam Checklist` },
+          { type: "bullets", items: [
+            `Can you define ${topic} without notes?`,
+            `Can you solve a problem involving ${topic} under time pressure?`,
+            `Have you reviewed past exam questions on ${topic}?`
+          ]}
+        ]
+      },
+      questions: {
+        easy: (topic) => [
+          { type: "heading", text: `❓ Practice Questions: ${topic} (Easy)` },
+          { type: "questions", items: [
+            `1. What is ${topic}? Provide a simple definition in your own words.`,
+            `2. Name three key components or features of ${topic}.`,
+            `3. Give one real-world example where ${topic} is used or observed.`,
+            `4. True or False: ${topic} is relevant only in academic settings. Explain your answer.`,
+            `5. Draw or describe a simple diagram that represents ${topic}.`
+          ]}
+        ],
+        medium: (topic) => [
+          { type: "heading", text: `❓ Practice Questions: ${topic} (Medium)` },
+          { type: "questions", items: [
+            `1. Explain how ${topic} differs from a closely related concept of your choice.`,
+            `2. Describe a scenario where understanding ${topic} would be critical. What would happen without that knowledge?`,
+            `3. What are the advantages and disadvantages of applying ${topic} in a practical context?`,
+            `4. Analyse the relationship between ${topic} and at least one other concept in the same field.`,
+            `5. Design a short experiment or case study to test a hypothesis related to ${topic}.`
+          ]}
+        ],
+        exam: (topic) => [
+          { type: "heading", text: `❓ Exam-Level Questions: ${topic}` },
+          { type: "questions", items: [
+            `1. Critically evaluate the significance of ${topic} within its broader field, citing specific evidence or examples.`,
+            `2. Compare and contrast two competing theories or models related to ${topic}. Which do you find more compelling and why?`,
+            `3. A student claims that ${topic} can be fully understood in isolation from related concepts. Do you agree? Justify your position.`,
+            `4. Propose a novel application of ${topic} in an emerging technology or field. What challenges might arise?`,
+            `5. Synthesise the key debates surrounding ${topic} and offer a reasoned conclusion based on the available evidence.`
+          ]}
+        ]
+      },
+      mindmap: {
+        easy: (topic) => [
+          { type: "heading", text: `🧠 Mindmap: ${topic}` },
+          { type: "mindmap", root: topic, branches: [
+            { label: "What is it?", children: ["Basic definition", "Simple examples"] },
+            { label: "Key Parts", children: ["Component A", "Component B", "Component C"] },
+            { label: "Why it matters", children: ["Real-world use", "Everyday impact"] }
+          ]}
+        ],
+        medium: (topic) => [
+          { type: "heading", text: `🧠 Mindmap: ${topic}` },
+          { type: "mindmap", root: topic, branches: [
+            { label: "Core Concepts", children: ["Theory", "Principles", "Models"] },
+            { label: "Applications", children: ["Industry use", "Academic research", "Case studies"] },
+            { label: "Relationships", children: ["Related concept X", "Related concept Y"] },
+            { label: "Challenges", children: ["Limitations", "Open problems"] }
+          ]}
+        ],
+        exam: (topic) => [
+          { type: "heading", text: `🧠 Advanced Mindmap: ${topic}` },
+          { type: "mindmap", root: topic, branches: [
+            { label: "Theoretical Foundations", children: ["Axioms & Proofs", "Historical development", "Key thinkers"] },
+            { label: "Sub-domains", children: ["Domain A", "Domain B", "Domain C", "Domain D"] },
+            { label: "Critical Analysis", children: ["Strengths", "Limitations", "Controversies"] },
+            { label: "Emerging Research", children: ["Recent findings", "Future directions"] },
+            { label: "Exam Focus Areas", children: ["High-frequency topics", "Common pitfalls"] }
+          ]}
+        ]
+      }
+    };
+
+    // ── Render helpers ──
+    function renderContent(blocks) {
+      const el = document.getElementById("output-content");
+      el.innerHTML = "";
+
+      blocks.forEach(block => {
+        if (block.type === "heading") {
+          const h = document.createElement("h4");
+          h.className = "font-bold text-slate-800 text-sm mt-5 mb-2 first:mt-0";
+          h.textContent = block.text;
+          el.appendChild(h);
+
+        } else if (block.type === "bullets") {
+          const ul = document.createElement("ul");
+          ul.className = "space-y-1.5 pl-4";
+          block.items.forEach(item => {
+            const li = document.createElement("li");
+            li.className = "flex items-start gap-2 text-slate-600 text-sm";
+            li.innerHTML = `<span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0"></span><span>${item}</span>`;
+            ul.appendChild(li);
+          });
+          el.appendChild(ul);
+
+        } else if (block.type === "questions") {
+          const ol = document.createElement("div");
+          ol.className = "space-y-3";
+          block.items.forEach(item => {
+            const li = document.createElement("div");
+            li.className = "bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-slate-700 text-sm leading-relaxed";
+            li.textContent = item;
+            ol.appendChild(li);
+          });
+          el.appendChild(ol);
+
+        } else if (block.type === 'mindmap') {
+  const container = document.createElement('div');
+  container.className = 'bg-gradient-to-br from-slate-50 to-indigo-50 border border-indigo-100 rounded-2xl p-8 overflow-hidden shadow-2xl';
+
+  // Interactive SVG Canvas (800x500, zoomable like Mapify)
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.id = 'mindmap-svg';
+  svg.setAttribute('width', '100%');
+  svg.setAttribute('height', '500');
+  svg.setAttribute('viewBox', '-50 -50 900 600');
+  svg.style.cursor = 'grab';
+  svg.style.background = 'radial-gradient(circle at 50% 50%, #f8fafc 0%, #e2e8f0 100%)';
+
+  // Zoom/Pan state
+  let scale = 1, translateX = 0, translateY = 0;
+  let isDragging = false, lastX = 0, lastY = 0;
+
+  // Central node (Mapify-style purple)
+  const centerX = 400, centerY = 250;
+  const rootGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  
+  const root = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  root.setAttribute('cx', centerX);
+  root.setAttribute('cy', centerY);
+  root.setAttribute('r', '50');
+  root.setAttribute('fill', '#6366f1');
+  root.setAttribute('stroke', '#4f46e5');
+  root.setAttribute('stroke-width', '4');
+  rootGroup.appendChild(root);
+  
+  const rootText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  rootText.setAttribute('x', centerX);
+  rootText.setAttribute('y', centerY + 8);
+  rootText.setAttribute('text-anchor', 'middle');
+  rootText.setAttribute('fill', 'white');
+  rootText.setAttribute('font-weight', 'bold');
+  rootText.setAttribute('font-size', '16');
+  rootText.textContent = block.root;
+  rootGroup.appendChild(rootText);
+  svg.appendChild(rootGroup);
+
+  // Branches (curved paths like Mapify)
+  block.branches.forEach((branch, i) => {
+    const angle = (i / block.branches.length) * Math.PI * 2.2 - Math.PI / 1.8;
+    const endX = centerX + 280 * Math.cos(angle);
+    const endY = centerY + 180 * Math.sin(angle);
+    
+    // Curved connection
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M ${centerX + 50 * Math.cos(angle)} ${centerY + 40 * Math.sin(angle)} Q ${centerX + 140 * Math.cos(angle)} ${centerY + 100 * Math.sin(angle)} ${endX} ${endY}`);
+    path.setAttribute('stroke', '#c4b5fd');
+    path.setAttribute('stroke-width', '5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(path);
+    
+    // Branch node
+    const nodeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const node = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    node.setAttribute('cx', endX);
+    node.setAttribute('cy', endY);
+    node.setAttribute('r', '38');
+    node.setAttribute('fill', '#ffffff');
+    node.setAttribute('stroke', '#a78bfa');
+    node.setAttribute('stroke-width', '3');
+    nodeGroup.appendChild(node);
+    
+    const nodeText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    nodeText.setAttribute('x', endX);
+    nodeText.setAttribute('y', endY + 12);
+    nodeText.setAttribute('text-anchor', 'middle');
+    nodeText.setAttribute('fill', '#6b7280');
+    nodeText.setAttribute('font-weight', '600');
+    nodeText.setAttribute('font-size', '14');
+    nodeText.textContent = branch.label;
+    nodeGroup.appendChild(nodeText);
+    svg.appendChild(nodeGroup);
+    
+    // Child badges (rounded rects)
+    branch.children.slice(0, 5).forEach((child, j) => {
+      const childAngle = angle + (j - 2) * 0.35;
+      const childDist = 110;
+      const childX = endX + childDist * Math.cos(childAngle);
+      const childY = endY + childDist * 0.6 * Math.sin(childAngle);
+      
+      const badge = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      badge.setAttribute('x', childX - 30);
+      badge.setAttribute('y', childY - 16);
+      badge.setAttribute('width', '60');
+      badge.setAttribute('height', '32');
+      badge.setAttribute('rx', '16');
+      badge.setAttribute('fill', '#f1f5f9');
+      badge.setAttribute('stroke', '#e2e8f0');
+      badge.setAttribute('stroke-width', '1');
+      svg.appendChild(badge);
+      
+      const childText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      childText.setAttribute('x', childX);
+      childText.setAttribute('y', childY + 6);
+      childText.setAttribute('text-anchor', 'middle');
+      childText.setAttribute('fill', '#64748b');
+      childText.setAttribute('font-size', '12');
+      childText.textContent = child;
+      svg.appendChild(childText);
+    });
+  });
+
+  // Mapify-like interactions (pan/zoom)
+  svg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.min(2, Math.max(0.5, scale * delta));
+    svg.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+  });
+
+  svg.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    svg.style.cursor = 'grabbing';
+  });
+
+  svg.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      const dx = (e.clientX - lastX) / scale;
+      const dy = (e.clientY - lastY) / scale;
+      translateX += dx;
+      translateY += dy;
+      svg.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    }
+  });
+
+  svg.addEventListener('mouseup', () => {
+    isDragging = false;
+    svg.style.cursor = 'grab';
+  });
+
+  svg.addEventListener('mouseleave', () => {
+    isDragging = false;
+    svg.style.cursor = 'grab';
+  });
+
+  container.appendChild(svg);
+  el.appendChild(container);
+}
+
+      });
+    }
+
+    // ── Main generate function ──
+    // OLD: setTimeout with fake data
+// NEW: Real AI + Save to database
+async function generateStudyMaterial() {
+  const topic = document.getElementById('topic-input').value;
+  const type = document.getElementById('material-type').value;
+  const difficulty = document.getElementById('difficulty').value;
+  
+  // Show loading
+  document.getElementById('loading-section').classList.remove('hidden');
+  
+  // TODO: Replace with real AI API later
+  setTimeout(async () => {
+    // Fake content (replace with real AI later)
+    const content = sampleContent[type][difficulty][topic] || sampleContent[type][difficulty]['default'];
+    renderContent(content);
+    
+    // SAVE TO REAL DATABASE
+    const user = await window.api.getUser();
+    if (user) {
+      await window.api.saveGeneration(topic, type, difficulty, content);
+      console.log('✅ Saved to database!');
+    }
+    
+    document.getElementById('output-section').classList.remove('hidden');
+    document.getElementById('loading-section').classList.add('hidden');
+  }, 2000);
+}
+
+
+    // ── Copy output ──
+    function copyOutput() {
+      const el = document.getElementById("output-content");
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById("copy-btn-text");
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = "Copy"; }, 2000);
+      });
+    }
+
+    // ── Clear / Start over ──
+    function clearOutput() {
+      document.getElementById("output-section").classList.add("hidden");
+      document.getElementById("topic-input").value = "";
+      document.getElementById("material-type").selectedIndex = 0;
+      document.getElementById("difficulty").selectedIndex = 0;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ── Element SDK init (editable title/subtitle) ──
+    const defaultConfig = {
+      page_title: "Generate Smart Study Material",
+      page_subtitle: "Turn any topic into notes, practice questions, or mindmaps instantly with AI."
+    };
+
+    window.elementSdk && window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => {
+        document.getElementById("hero-title").textContent = config.page_title || defaultConfig.page_title;
+        document.getElementById("hero-subtitle").textContent = config.page_subtitle || defaultConfig.page_subtitle;
+      },
+      mapToCapabilities: (config) => ({
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ["page_title", config.page_title || defaultConfig.page_title],
+        ["page_subtitle", config.page_subtitle || defaultConfig.page_subtitle]
+      ])
+    });
+
+    // ── Boot ──
+    initAuth();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9dc1cf1ec37a285b',t:'MTc3MzQ3NTkwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module">
+  import { signUp, signIn, getCurrentUser, saveGeneration, getStudyTopics } from './backend-api.js';
+  window.api = { signUp, signIn, getCurrentUser, saveGeneration, getStudyTopics };
+</script>
+
+</body>
+</html>
